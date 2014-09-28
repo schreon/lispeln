@@ -1,23 +1,10 @@
-from lispeln.types import Integer, Float, Environment
+from lispeln.types import Integer, Float, Environment, Symbol
 
 __author__ = 'schreon'
 
 import unittest
 
 
-class Expression(object):
-    pass
-
-class Procedure(object):
-
-    def __init__(self, name, operand, *args):
-        self.name = name
-        self.operand = operand
-        self.args = args
-
-    def eval(self, environment):
-        args = [environment.eval(arg) for arg in self.args]
-        return self.operand(*args)
 
 def plus(*args):
     for arg in args:
@@ -31,6 +18,19 @@ def plus(*args):
     raise Exception("Invalid result type: %s" % str(type(s)))
 
 class ExpressionTestCase(unittest.TestCase):
+    def test_symbol(self):
+        x = Symbol("test")
+        self.assertEquals(repr(x), "<Symbol:test>")
+        self.assertEquals(str(x), "'test")
+        Symbol("test123")
+        Symbol("test_123")
+        Symbol("test!")
+
+        # should have same object identity
+        self.assertIs(Symbol("a"), Symbol("a"))
+        # Symbol created by Symbol should work
+        self.assertIs(Symbol("a"), Symbol(Symbol("a")))
+
     def test_expression(self):
 
         env = Environment(None)
@@ -39,8 +39,9 @@ class ExpressionTestCase(unittest.TestCase):
         proc = Procedure('+', plus, Integer(1), Integer(2))
         self.assertEquals(proc.eval(env), Integer(3))
 
-        #expr = Expression(plus, Integer("1"), Integer("2"))
-        #self.assertEquals(expr.eval(), Integer("3"))
+        env['+'] = proc
+        expr = Expression(Symbol('+'), Integer(1), Integer(2))
+        self.assertEquals(expr.eval(env), Integer(3))
 
 
 if __name__ == '__main__':

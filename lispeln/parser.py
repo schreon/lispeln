@@ -1,4 +1,5 @@
-from lispeln.types import Integer, Float, Symbol, Boolean
+from lispeln.constants import Integer, Float, Boolean
+from lispeln.expressions import Symbol
 import re
 
 patterns = {
