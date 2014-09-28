@@ -1,7 +1,7 @@
 __author__ = 'schreon'
 WHITESPACE = frozenset([' ', '\n', '\t'])
 
-class Reader(object):
+class Scanner(object):
     def __init__(self, string):
         self.string = string
         self.cursor = 0
