@@ -8,19 +8,14 @@ class SchemeTypesTestCase(unittest.TestCase):
         x = Type("test")
         self.assertEquals(repr(x), "<Type:test>")
         self.assertEquals(str(x), "test")
-        self.assertTrue(x.matches("hier kann einfach alles stehen 42 ! <<< whohooo"))
 
     def test_int(self):
-        x = Integer("42")
+        x = Integer(42)
         self.assertEquals(repr(x), "<Integer:42>")
         self.assertEquals(str(x), "42")
-        self.assertFalse(x.matches("hier kann einfach man nicht einfach alles reinschreiben"))
-        self.assertTrue(x.matches("42"))
-        self.assertFalse(x.matches("42.4242424242"))
-        self.assertFalse(x.matches("a42b"))
 
     def test_float(self):
-        x = Float("42.42")
+        x = Float(42.42)
         self.assertEquals(repr(x), "<Float:42.42>")
         self.assertEquals(str(x), "42.42")
         self.assertRaises(InvalidValueException, Float, '"test"')
@@ -38,7 +33,6 @@ class SchemeTypesTestCase(unittest.TestCase):
         Symbol("test123")
         Symbol("test_123")
         Symbol("test!")
-        self.assertRaises(InvalidValueException, Symbol, 'test ( ) [ ] { } " , \' ` ; # | \\')
 
         # should have same object identity
         self.assertIs(Symbol("a"), Symbol("a"))
@@ -46,10 +40,10 @@ class SchemeTypesTestCase(unittest.TestCase):
         self.assertIs(Symbol("a"), Symbol(Symbol("a")))
 
     def test_boolean(self):
-        x = Boolean("true")
+        x = Boolean(True)
         self.assertEquals(repr(x), "<Boolean:true>")
         self.assertEquals(str(x), "#t")
-        x = Boolean("false")
+        x = Boolean(False)
         self.assertEquals(repr(x), "<Boolean:false>")
         self.assertEquals(str(x), "#f")
         self.assertRaises(InvalidValueException, Boolean, '123')

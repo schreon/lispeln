@@ -9,34 +9,49 @@ class UndefinedSymbolException(Exception):
 
 
 class Type(object):
-    pattern = re.compile(r"^.*$")
-
+    impl_type = str
     def __init__(self, value):
-        if not self.matches(value):
-            raise InvalidValueException("The given value %s does not match the pattern %s" % (value, self.pattern.pattern))
+        if type(value) != self.impl_type:
+            raise InvalidValueException("Expected type %s but got type %s" % (str(type(value)), str(self.impl_type)))
         self.value = value
-
-    def matches(self, string):
-        if self.pattern.match(string) is not None:
-            return True
-        else:
-            return False
 
     def __repr__(self):
         return "<%s:%s>" % (self.__class__.__name__, self.value)
 
     def __str__(self):
-        return self.value
+        return str(self.value)
+
+    def __eq__(self, other):
+        if self.value == other:
+            return True
+        else:
+            return False
 
 class Integer(Type):
-    pattern = re.compile(r"^[0-9]+$")
+    impl_type = int
 
 class Float(Type):
-    pattern = re.compile(r"^[0-9]+.[0-9]+$")
+    impl_type = float
 
 class String(Type):
     def __str__(self):
         return '"%s"' % self.value
+
+class Boolean(Type):
+    impl_type = bool
+
+    def __repr__(self):
+        if self.value == True:
+            rep = 'true'
+        if self.value == False:
+            rep = 'false'
+        return "<%s:%s>" % (self.__class__.__name__, rep)
+
+    def __str__(self):
+        if self.value == True:
+            return "#t"
+        if self.value == False:
+            return "#f"
 
 class SingletonByValue(type):
     """
@@ -54,21 +69,9 @@ class SingletonByValue(type):
 class Symbol(Type):
     __metaclass__ = SingletonByValue
 
-    # everything except ( ) [ ] { } " , ' ` ; # | \
-    # # allowed at the beginning, but not if followed by %
-    pattern = re.compile(r"^(?!\#%)(\#)?\.?[^\s\(\)\[\]\{\}\"\,\'\;\#\|\\]+$")
     def __str__(self):
         return "'%s" % self.value
 
-
-class Boolean(Type):
-    pattern = re.compile(r"false|true")
-
-    def __str__(self):
-        if self.value == "true":
-            return "#t"
-        else:
-            return "#f"
 
 class Nil(Type):
     def __init__(self):
@@ -159,3 +162,14 @@ class Environment(collections.MutableMapping):
 
     def keytransform(self, key):
         return Symbol(key)
+
+    def eval(self, expr):
+        if type(expr) in [Integer, Float, String, Boolean]:
+            return expr
+        elif type(expr) == Symbol:
+            try:
+                return self.__getitem__(expr)
+            except KeyError:
+                raise Exception("%s undefined. Cannot reference an identifier before its definition!" % str(expr))
+        else:
+            expr.eval(self)

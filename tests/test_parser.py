@@ -21,11 +21,12 @@ class ParserTestCase(unittest.TestCase):
 
     def test_plus(self):
         """
-        it parses
+        it parses (+ 1 2)
         """
         parser = Parser()
-        result = parser.parse("(+ 1 2)")
+        output = parser.parse("(+ 1 2)")
 
+        expected = Expression(Plus, Integer("1"), Integer("2"))
 
 
 if __name__ == '__main__':
