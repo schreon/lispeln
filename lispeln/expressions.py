@@ -1,9 +1,11 @@
-from lispeln.environment import Environment
-
+import collections
 
 class Expression(object):
-    def eval(self, environment):
-        raise Exception("Expression not implemented.")
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def eval(self, *args, **kwargs):
+        pass
 
     def __repr__(self):
         return "<%s:%s>" % (self.__class__.__name__, self.value)
@@ -11,16 +13,40 @@ class Expression(object):
     def __str__(self):
         return str(self.value)
 
-class Constant(Expression):
-    def __init__(self, value):
-        self.value = value
+
+class Procedure(object):
+
+    def __init__(self, implementation, num_args=None):
+        super(Procedure, self).__init__()
+        self.implementation = implementation
+        self.num_args = num_args
+
+    def __call__(self, *arguments):
+        """
+        Calls the implementation with the arguments
+        """
+        if self.num_args is None or len(arguments) == self.num_args:
+            return self.implementation(*arguments)
+        else:
+            raise Exception("Invalid number of arguments. Expected %d, but got %d" % (self.num_args, len(arguments)))
+
+    def eval(self, environment):
+        return self
+
+class Call(Expression):
+    def __init__(self, operator, *operands):
+        super(Expression, self).__init__()
+        self.operator = operator
+        self.operands = operands
 
     def eval(self, environment):
         """
-        Contants evaluate to themselves
+        Calls a procedure
         """
-        return self
-
+        scope = Environment(environment)
+        operator = self.operator.eval(scope)
+        operands = [operand.eval(scope) for operand in self.operands]
+        return operator(*operands)
 
 class SingletonByValue(type):
     """
@@ -38,39 +64,46 @@ class SingletonByValue(type):
 class Symbol(Expression):
     __metaclass__ = SingletonByValue
 
-    def __init__(self, value):
+    def __init__(self, value, *args, **kwargs):
+        super(Symbol, self).__init__(*args, **kwargs)
         self.value = value
 
     def __str__(self):
         return "'%s" % self.value
 
-class Procedure(Expression):
-
-    def __init__(self, name, operand, *args):
-        self.name = name
-        self.operand = operand
-        self.args = args
-
     def eval(self, environment):
-        """
-        Calls the operand with the arguments
-        """
-        # evaluate the arguments with the given scope
-        args = [arg.eval(environment) for arg in self.args]
-        # call the operand with the arguments
-        return self.operand(*args)
+        return environment[self].eval(environment)
 
-class Call(Expression):
-    def __init__(self, *expressions):
-        super(Expression, self).__init__()
-        self.expressions = expressions
+class Environment(collections.MutableMapping):
 
-    def eval(self, environment):
-        """
-        Calls a procedure
-        """
-        scope = Environment(environment)
-        proc = self.expressions[0]
-        return proc.eval(scope)
+    def __init__(self, parent, *args, **kwargs):
+        self.parent = parent
+        # convert keys to symbols
+        self.store = dict()
+        self.update(*args, **kwargs)
 
+    def __setitem__(self, key, value):
+        self.store[self.keytransform(key)] = value
 
+    def __getitem__(self, key):
+        key = self.keytransform(key)
+
+        # if the item is in this environment, fine ...
+        if key in self.store:
+            return self.store[key]
+        if self.parent is not None:
+            return self.parent[key]
+        else:
+            return self.store[key]
+
+    def __iter__(self):
+        return iter(self.store)
+
+    def __len__(self):
+        return len(self.store)
+
+    def __delitem__(self, key):
+        del self.store[self.keytransform(key)]
+
+    def keytransform(self, key):
+        return Symbol(key)

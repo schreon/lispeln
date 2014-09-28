@@ -1,15 +1,11 @@
-from lispeln.types import Integer, Float, Environment, Symbol
-
-__author__ = 'schreon'
-
 import unittest
-
-
+from lispeln.constants import Float, Integer
+from lispeln.expressions import Symbol, Environment, Procedure, Expression, Call
 
 def plus(*args):
     for arg in args:
         if type(arg) not in [Float, Integer]:
-            raise Exception("Invalid argument type: %s" % str(type(arg)))
+            raise Exception("Invalid argument type: %s - Expected: Float or Integer" % str(type(arg)))
     s = sum(arg.value for arg in args)
     if type(s) == float:
         return Float(s)
@@ -31,18 +27,46 @@ class ExpressionTestCase(unittest.TestCase):
         # Symbol created by Symbol should work
         self.assertIs(Symbol("a"), Symbol(Symbol("a")))
 
+    def test_environment(self):
+        root = Environment(None, a=1, b=2)
+
+        for key, val in root.iteritems():
+            self.assertIsInstance(key, Symbol)
+            self.assertIn(val, [1, 2])
+
+        child1 = Environment(root, c=3)
+        child2 = Environment(root, d=4)
+
+        self.assertIn('a', child1)
+        self.assertIn('b', child1)
+        self.assertIn('c', child1)
+        self.assertNotIn('d', child1)
+
+        self.assertIn('a', child2)
+        self.assertIn('b', child2)
+        self.assertNotIn('c', child2)
+        self.assertIn('d', child2)
+
     def test_expression(self):
 
         env = Environment(None)
         self.assertEquals(plus(Integer(1), Integer(2)), Integer(3))
 
-        proc = Procedure('+', plus, Integer(1), Integer(2))
-        self.assertEquals(proc.eval(env), Integer(3))
+        proc = Procedure(plus)
+        self.assertEquals(proc(Integer(1), Integer(2)), Integer(3))
 
         env['+'] = proc
-        expr = Expression(Symbol('+'), Integer(1), Integer(2))
-        self.assertEquals(expr.eval(env), Integer(3))
 
+        call = Call(Symbol('+'), Integer(1), Integer(2))
+        self.assertEquals(call.eval(env), Integer(3))
+
+        call = Call(Symbol('+'), Integer(1), Integer(2), Integer(-2), Integer(100))
+        self.assertEquals(call.eval(env), Integer(101))
+
+        env['a'] = Integer(10)
+        env['b'] = Integer(-7)
+        call = Call(Symbol('+'), Symbol('a'), Symbol('b'))
+        self.assertEquals(call.eval(env), Integer(3))
 
 if __name__ == '__main__':
     unittest.main()

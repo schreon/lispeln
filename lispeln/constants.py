@@ -1,6 +1,18 @@
-from lispeln.expressions import Constant
+from lispeln.expressions import Expression
 
 
+class Constant(Expression):
+    def __init__(self, value):
+        self.value = value
+
+    def eval(self, environment):
+        """
+        Contants evaluate to themselves
+        """
+        return self
+
+    def __eq__(self, other):
+        return self.value == other.value
 
 class Nil(Constant):
     def __init__(self):

@@ -1,3 +1,4 @@
+from lispeln.expressions import Call
 from lispeln.scanner import Scanner
 
 __author__ = 'schreon'
@@ -26,7 +27,6 @@ class ParserTestCase(unittest.TestCase):
         parser = Parser()
         output = parser.parse("(+ 1 2)")
 
-        expected = Expression(Plus, Integer("1"), Integer("2"))
 
 
 if __name__ == '__main__':
