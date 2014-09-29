@@ -15,8 +15,6 @@ class BuiltInsTestCase(unittest.TestCase):
         env['a'] = Integer(1)
         env['b'] = Integer(5)
 
-
-
         res = Call(Symbol('eq?'), Symbol('a'), Symbol('b')).eval(env)
         self.assertEquals(res, Boolean(False))
 

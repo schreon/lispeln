@@ -129,7 +129,7 @@ class Lambda(Expression):
 
         return Procedure(implementation, num_args=len(self.formals))
 
-class SingletonByValue(type):
+class SymbolSingleton(type):
     """
     Metaclass designed for Singletons by value. For each value there is only one instance.
     """
@@ -139,11 +139,11 @@ class SingletonByValue(type):
             return value
 
         if value not in cls._instances.keys():
-            cls._instances[value] = super(SingletonByValue, cls).__call__(value, *args, **kwargs)
+            cls._instances[value] = super(SymbolSingleton, cls).__call__(value, *args, **kwargs)
         return cls._instances[value]
 
 class Symbol(Expression):
-    __metaclass__ = SingletonByValue
+    __metaclass__ = SymbolSingleton
 
     def __init__(self, value, *args, **kwargs):
         super(Symbol, self).__init__(*args, **kwargs)

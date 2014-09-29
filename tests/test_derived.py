@@ -17,8 +17,8 @@ class DerivedTestCase(unittest.TestCase):
         x = Cons(a, b)
         self.assertEquals(repr(x), "<Cons: ('a.'b)>")
         self.assertEquals(str(x), "('a . 'b)")
-        self.assertEquals(x.first, a)
-        self.assertEquals(x.rest, b)
+        self.assertIs(x.first, a)
+        self.assertIs(x.rest, b)
 
         x = Cons(a, Cons(a, Cons(a, b)))
         self.assertEquals(x.ravel(), [a, a, a, b])

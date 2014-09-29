@@ -32,11 +32,10 @@ class SchemeTypesTestCase(unittest.TestCase):
         x = Nil()
         self.assertEquals(repr(x), "<Nil>")
         self.assertEquals(str(x), "'()")
+        y = Nil()
 
-    def test_procedure(self):
-        proc = Procedure('my_procedure', ['-', 3, 4])
-        self.assertEquals(repr(proc), "<Procedure:my_procedure>")
-        self.assertEquals(str(proc), "my_procedure")
+        self.assertIs(x, y)
+
 
 
 

@@ -1,7 +1,19 @@
 from lispeln.expressions import Expression
 
+class ConstantSingleton(type):
+    """
+    Metaclass designed for Singletons by argument list. For each argument list there is only one instance.
+    """
+    _instances = {}
+    def __call__(cls, *args):
+        key = (cls, args)
+        if key not in cls._instances.keys():
+            cls._instances[key] = super(ConstantSingleton, cls).__call__(*args)
+        return cls._instances[key]
 
 class Constant(Expression):
+    __metaclass__ = ConstantSingleton
+
     def __init__(self, value, *args, **kwargs):
         super(Constant, self).__init__(*args, **kwargs)
         self.value = value
@@ -55,8 +67,6 @@ class String(Constant):
         return '"%s"' % self.value
 
 class Boolean(Constant):
-    impl_type = bool
-
     def __repr__(self):
         rep = None
         if self.value == True:
