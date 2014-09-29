@@ -1,7 +1,7 @@
-from lispeln.builtins import _plus
-from lispeln.constants import Nil, Integer, Boolean
-from lispeln.derived import Cons, Let, Begin
-from lispeln.expressions import Symbol, Environment, Conditional, Procedure, Call, Define
+from lispeln.scheme.builtins import _plus
+from lispeln.scheme.constants import Nil, Integer
+from lispeln.scheme.derived import Cons, Let, Begin
+from lispeln.scheme.expressions import Symbol, Environment, Procedure, Define, Call
 
 __author__ = 'schreon'
 
@@ -15,20 +15,18 @@ class DerivedTestCase(unittest.TestCase):
     def test_cons(self):
         a, b = Symbol("a"), Symbol("b")
         x = Cons(a, b)
-        self.assertEquals(repr(x), "<Cons: ('a.'b)>")
-        self.assertEquals(str(x), "('a . 'b)")
         self.assertIs(x.first, a)
         self.assertIs(x.rest, b)
 
-        x = Cons(a, Cons(a, Cons(a, b)))
-        self.assertEquals(x.ravel(), [a, a, a, b])
-        self.assertEquals(str(x), "('a 'a 'a . 'b)")
+        env = Environment(None)
+        env['a'] = Integer(123)
+        env['b'] = Integer(42)
 
-        x = Cons(a, Cons(Cons(a, b), Cons(a, b)))
-        self.assertEquals(str(x), "('a ('a . 'b) 'a . 'b)")
+        x = Cons(a, Cons(a, Cons(a, Cons(b, Nil()))))
+        e = x.eval(env)
+        self.assertEquals(e.first, Integer(123))
+        self.assertEquals(e.rest.rest.rest.first, Integer(42))
 
-        x = Cons(a, Cons(b, Nil()))
-        self.assertEquals(str(x), "('a 'b)")
 
     def test_let(self):
         env = Environment(None)

@@ -8,10 +8,10 @@ class Expression(object):
         pass
 
     def __repr__(self):
-        return "<%s:%s>" % (self.__class__.__name__, self.value)
+        raise Exception("No representation implemented for %s" % str(self.__class__))
 
     def __str__(self):
-        return str(self.value)
+        raise Exception("No string representation implemented for %s" % str(self.__class__))
 
     def __eq__(self, other):
         raise Exception('equality is not defined on expression %s' % str(self.__class__))

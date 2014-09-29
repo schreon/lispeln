@@ -1,5 +1,6 @@
 import unittest
-from lispeln.scanner import Scanner, EndOfStringException, UnexpectedInputException
+
+from lispeln.parser.scanner import Scanner, EndOfStringException, UnexpectedInputException
 
 
 class ScannerTestCase(unittest.TestCase):

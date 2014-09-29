@@ -1,6 +1,6 @@
 import unittest
-from lispeln.constants import Integer, Float, String, Boolean, Nil
-from lispeln.expressions import Procedure
+
+from lispeln.scheme.constants import Integer, Float, String, Boolean, Nil
 
 
 class SchemeTypesTestCase(unittest.TestCase):

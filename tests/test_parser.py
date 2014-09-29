@@ -1,5 +1,4 @@
-from lispeln.expressions import Call
-from lispeln.scanner import Scanner
+from lispeln.parser.scanner import Scanner
 
 __author__ = 'schreon'
 

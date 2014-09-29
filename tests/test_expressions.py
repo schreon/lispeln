@@ -1,8 +1,8 @@
 import unittest
-from lispeln.builtins import _plus, _equals
-from lispeln.constants import Float, Integer, Boolean, String
-from lispeln.expressions import Symbol, Environment, Procedure, Expression, Call, Lambda, Conditional, Define, Set
+from lispeln.scheme.builtins import _plus
 
+from lispeln.scheme.constants import Integer, Boolean
+from lispeln.scheme.expressions import Symbol, Environment, Procedure, Call, Lambda, Conditional, Define, Set
 
 
 class ExpressionTestCase(unittest.TestCase):

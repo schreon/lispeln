@@ -1,9 +1,8 @@
 import unittest
-from lispeln.builtins import _plus, _equals, _less_than, _less_equal, _greater_equal, _greater_than, _minus, \
-    define_builtins
-from lispeln.constants import Float, Integer, Boolean, String
-from lispeln.expressions import Symbol, Environment, Procedure, Expression, Call, Lambda, Conditional, Define, Set
+from lispeln.scheme.builtins import define_builtins
 
+from lispeln.scheme.constants import Float, Integer, Boolean, String
+from lispeln.scheme.expressions import Environment, Call, Symbol
 
 
 class BuiltInsTestCase(unittest.TestCase):
