@@ -1,6 +1,7 @@
-from lispeln.constants import Nil
-from lispeln.derived import Cons
-from lispeln.expressions import Symbol
+from lispeln.builtins import plus
+from lispeln.constants import Nil, Integer, Boolean
+from lispeln.derived import Cons, Let
+from lispeln.expressions import Symbol, Environment, Conditional, Procedure, Call
 
 __author__ = 'schreon'
 
@@ -8,6 +9,7 @@ import unittest
 
 
 class DerivedTestCase(unittest.TestCase):
+
     def test_cons(self):
         a, b = Symbol("a"), Symbol("b")
         x = Cons(a, b)
@@ -25,6 +27,16 @@ class DerivedTestCase(unittest.TestCase):
 
         x = Cons(a, Cons(b, Nil()))
         self.assertEquals(str(x), "('a 'b)")
+
+    def test_let(self):
+        env = Environment(None)
+        env['+'] = Procedure(plus)
+        env['x'] = Integer(0)
+        env['y'] = Integer(1)
+
+        let = Let([(Symbol('x'), Integer(10))], Call(Symbol('+'), Symbol('x'), Symbol('y')))
+
+        self.assertEquals(let.eval(env), Integer(11))
 
 if __name__ == '__main__':
     unittest.main()

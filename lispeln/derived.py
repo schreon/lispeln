@@ -1,5 +1,5 @@
 from lispeln.constants import Nil
-from lispeln.expressions import Expression
+from lispeln.expressions import Expression, Environment
 
 
 class Cons(Expression):
@@ -42,3 +42,15 @@ class Cons(Expression):
 
     def __repr__(self):
         return "<%s: (%s.%s)>" % (self.__class__.__name__, self.first, self.rest)
+
+class Let(Expression):
+    def __init__(self, definitions, expression):
+        super(Let, self).__init__()
+        self.definitions = definitions
+        self.expression = expression
+
+    def eval(self, env):
+        scope = Environment(env)
+        for (symbol, value) in self.definitions:
+            scope[symbol] = value
+        return self.expression.eval(scope)
