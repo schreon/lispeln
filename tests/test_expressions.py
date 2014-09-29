@@ -1,6 +1,6 @@
 import unittest
-from lispeln.builtins import plus
-from lispeln.constants import Float, Integer, Boolean
+from lispeln.builtins import _plus, _equals
+from lispeln.constants import Float, Integer, Boolean, String
 from lispeln.expressions import Symbol, Environment, Procedure, Expression, Call, Lambda, Conditional, Define, Set
 
 
@@ -46,9 +46,9 @@ class ExpressionTestCase(unittest.TestCase):
     def test_procedure(self):
 
         env = Environment(None)
-        self.assertEquals(plus(Integer(1), Integer(2)), Integer(3))
+        self.assertEquals(_plus(Integer(1), Integer(2)), Integer(3))
 
-        proc = Procedure(plus)
+        proc = Procedure(_plus)
         self.assertEquals(proc(Integer(1), Integer(2)), Integer(3))
 
         env['+'] = proc
@@ -70,7 +70,7 @@ class ExpressionTestCase(unittest.TestCase):
         env['a'] = Integer(1)
         env['b'] = Integer(5)
         env['c'] = Integer(-100)
-        env['f'] = Procedure(plus)
+        env['f'] = Procedure(_plus)
         env['g'] = Lambda([Symbol('c')], [Symbol('f'), Symbol('a'), Symbol('b'), Symbol('c')])
 
         env['x'] = Integer(50)
@@ -109,8 +109,11 @@ class ExpressionTestCase(unittest.TestCase):
     def test_quote(self):
         env = Environment(None)
 
+
         # TODO: test quote
         # TODO: implement external representations
+
+
 
 if __name__ == '__main__':
     unittest.main()

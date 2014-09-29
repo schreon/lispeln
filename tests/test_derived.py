@@ -1,4 +1,4 @@
-from lispeln.builtins import plus
+from lispeln.builtins import _plus
 from lispeln.constants import Nil, Integer, Boolean
 from lispeln.derived import Cons, Let, Begin
 from lispeln.expressions import Symbol, Environment, Conditional, Procedure, Call, Define
@@ -32,7 +32,7 @@ class DerivedTestCase(unittest.TestCase):
 
     def test_let(self):
         env = Environment(None)
-        env['+'] = Procedure(plus)
+        env['+'] = Procedure(_plus)
         env['y'] = Integer(1)
 
         let = Let([(Symbol('x'), Integer(10))], Call(Symbol('+'), Symbol('x'), Symbol('y')))
@@ -46,7 +46,7 @@ class DerivedTestCase(unittest.TestCase):
         begin = Begin(
             Define(Symbol('a'), Integer(42)),
             Define(Symbol('b'), Integer(-42)),
-            Call(Procedure(plus), Symbol('a'), Symbol('b'))
+            Call(Procedure(_plus), Symbol('a'), Symbol('b'))
         )
 
         self.assertEquals(begin.eval(env), Integer(0))

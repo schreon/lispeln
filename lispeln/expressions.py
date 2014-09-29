@@ -13,6 +13,25 @@ class Expression(object):
     def __str__(self):
         return str(self.value)
 
+    def __eq__(self, other):
+        raise Exception('equality is not defined on expression %s' % str(self.__class__))
+
+    def __ne__(self, other):
+        raise Exception('unequality is not defined on expression %s' % str(self.__class__))
+
+    def __lt__(self, other):
+        raise Exception('less-than-operator is not defined on expression %s' % str(self.__class__))
+
+    def __le__(self, other):
+        raise Exception('less-equals-operator is not defined on expression %s' % str(self.__class__))
+
+    def __gt__(self, other):
+        raise Exception('greater-than-operator is not defined on expression %s' % str(self.__class__))
+
+    def __ge__(self, other):
+        raise Exception('greater-equals-operator is not defined on expression %s' % str(self.__class__))
+
+
 class Conditional(Expression):
     def __init__(self, test, consequent, alternate):
         super(Conditional, self).__init__()
