@@ -1,6 +1,6 @@
-from lispeln.scheme.constants import Nil, Integer, Float, Boolean
+from lispeln.scheme.constants import Nil, Integer, Float, Boolean, String
 from lispeln.scheme.derived import Cons
-from lispeln.scheme.expressions import Symbol
+from lispeln.scheme.expressions import Symbol, Procedure
 
 import logging
 
@@ -56,16 +56,27 @@ def print_boolean(boolean):
 def print_nil(nil):
     return "()"
 
-print_dict = {
+def print_string(s):
+    return '"%s"' % s.value
+
+def print_proc(proc):
+    if proc.name is not None:
+        return '#<procedure:%s>' % proc.name
+    else:
+        return '#<procedure>'
+
+print_map = {
     Nil: print_nil,
     Boolean: print_boolean,
     Integer: print_number,
     Float: print_number,
+    String: print_string,
     Symbol: print_symbol,
-    Cons: print_cons
+    Cons: print_cons,
+    Procedure: print_proc
 }
 def print_expression(expression):
-    print_func = print_dict.get(expression.__class__, None)
+    print_func = print_map.get(expression.__class__, None)
     if print_func is None:
         raise Exception("No print function defined for %s" % str(expression.__class__))
     else:

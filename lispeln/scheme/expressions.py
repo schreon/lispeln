@@ -1,4 +1,5 @@
 import collections
+import logging
 
 class Expression(object):
     def __init__(self, *args, **kwargs):
@@ -75,8 +76,9 @@ class Quote(Expression):
 
 class Procedure(object):
 
-    def __init__(self, implementation, num_args=None):
+    def __init__(self, implementation, num_args=None, name=None):
         super(Procedure, self).__init__()
+        self.name = name
         self.implementation = implementation
         self.num_args = num_args
 
@@ -113,7 +115,8 @@ class Lambda(Expression):
         self.formals = formals
         self.body = body
 
-    def eval(self, environment):
+
+    def eval(self, environment, name=None):
         super(Lambda, self).eval()
         scope = Environment(environment)
 
@@ -127,7 +130,8 @@ class Lambda(Expression):
             operands = [op.eval(scope) for op in this.body[1:]]
             return Call(operator, *operands).eval(scope)
 
-        return Procedure(implementation, num_args=len(self.formals))
+        logging.info("Evaluating Lambda with name: %s" % str(name))
+        return Procedure(implementation, num_args=len(self.formals), name=name)
 
 class SymbolSingleton(type):
     """
@@ -153,7 +157,10 @@ class Symbol(Expression):
         return "'%s" % self.value
 
     def eval(self, environment):
-        return environment[self].eval(environment)
+        if isinstance(environment[self], Lambda):
+            return environment[self].eval(environment, name=self.value)
+        else:
+            return environment[self].eval(environment)
 
 class Environment(collections.MutableMapping):
 
