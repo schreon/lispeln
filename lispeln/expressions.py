@@ -43,14 +43,36 @@ class Call(Expression):
         """
         Calls a procedure
         """
-        scope = Environment(environment)
-        operator = self.operator.eval(scope)
-        operands = [operand.eval(scope) for operand in self.operands]
+        operator = self.operator.eval(environment)
+        operands = [operand.eval(environment) for operand in self.operands]
         return operator(*operands)
+
+
+class Lambda(Expression):
+    def __init__(self, formals, body, *args, **kwargs):
+        super(Lambda, self).__init__(*args, **kwargs)
+        self.formals = formals
+        self.body = body
+
+    def eval(self, environment):
+        super(Lambda, self).eval()
+        scope = Environment(environment)
+
+        this = self
+        def implementation(*arguments):
+            if len(arguments) != len(this.formals):
+                raise Exception("Invalid number of Arguments: %d, Expected: %d" % (len(arguments), len(this.formals)))
+            for symbol, value in zip(this.formals, arguments):
+                scope[symbol] = value.eval(scope)
+            operator = this.body[0]
+            operands = [op.eval(scope) for op in this.body[1:]]
+            return Call(operator, *operands).eval(scope)
+
+        return Procedure(implementation, num_args=len(self.formals))
 
 class SingletonByValue(type):
     """
-    Metaclass designed for Symbols. For each Symbol value there is only one Symbol instance.
+    Metaclass designed for Singletons by value. For each value there is only one instance.
     """
     _instances = {}
     def __call__(cls, value, *args, **kwargs):

@@ -1,6 +1,7 @@
 import unittest
 from lispeln.constants import Float, Integer
-from lispeln.expressions import Symbol, Environment, Procedure, Expression, Call
+from lispeln.expressions import Symbol, Environment, Procedure, Expression, Call, Lambda
+
 
 def plus(*args):
     for arg in args:
@@ -47,7 +48,11 @@ class ExpressionTestCase(unittest.TestCase):
         self.assertNotIn('c', child2)
         self.assertIn('d', child2)
 
-    def test_expression(self):
+        child1['a'] = 5
+        self.assertEquals(child1['a'], 5)
+        self.assertEquals(root['a'], 1)
+
+    def test_procedure(self):
 
         env = Environment(None)
         self.assertEquals(plus(Integer(1), Integer(2)), Integer(3))
@@ -67,6 +72,20 @@ class ExpressionTestCase(unittest.TestCase):
         env['b'] = Integer(-7)
         call = Call(Symbol('+'), Symbol('a'), Symbol('b'))
         self.assertEquals(call.eval(env), Integer(3))
+
+    def test_lambda(self):
+
+        env = Environment(None)
+        env['a'] = Integer(1)
+        env['b'] = Integer(5)
+        env['c'] = Integer(-100)
+        env['f'] = Procedure(plus)
+        env['g'] = Lambda([Symbol('c')], [Symbol('f'), Symbol('a'), Symbol('b'), Symbol('c')])
+
+        env['x'] = Integer(50)
+        call = Call(Symbol('g'), Symbol('x'))
+        self.assertEquals(call.eval(env), Integer(56))
+
 
 if __name__ == '__main__':
     unittest.main()

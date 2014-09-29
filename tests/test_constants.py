@@ -19,7 +19,6 @@ class SchemeTypesTestCase(unittest.TestCase):
         x = String('eins Zwei DREI')
         self.assertEquals(repr(x), '<String:eins Zwei DREI>')
         self.assertEquals(str(x), '"eins Zwei DREI"')
-        String('bla bla bla')
 
     def test_boolean(self):
         x = Boolean(True)
