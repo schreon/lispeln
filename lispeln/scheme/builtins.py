@@ -57,21 +57,11 @@ def _greater_equal(arg1, arg2):
     else:
         return Boolean(False)
 
-def _and(*args):
-    res = Boolean(True)
-    for arg in args:
-        if arg == Boolean(False):
-            return Boolean(False)
-        else:
-            res = arg
-    return res
-
 def define_builtins(env):
-    env['+'] = Procedure(_plus)
-    env['-'] = Procedure(_minus)
-    env['eq?'] = Procedure(_equals, num_args=2)
-    env['<'] = Procedure(_less_than, num_args=2)
-    env['<='] = Procedure(_less_equal, num_args=2)
-    env['>'] = Procedure(_greater_than, num_args=2)
-    env['>='] = Procedure(_greater_equal, num_args=2)
-    env['and'] = Procedure(_and)
+    env['+'] = Procedure(_plus, name='+')
+    env['-'] = Procedure(_minus, name='-')
+    env['eq?'] = Procedure(_equals, num_args=2, name='eq?')
+    env['<'] = Procedure(_less_than, num_args=2, name='<')
+    env['<='] = Procedure(_less_equal, num_args=2, name='<=')
+    env['>'] = Procedure(_greater_than, num_args=2, name='>')
+    env['>='] = Procedure(_greater_equal, num_args=2, name='>=')

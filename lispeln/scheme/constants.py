@@ -1,4 +1,4 @@
-from lispeln.scheme.expressions import Expression
+from lispeln.scheme.expression import Expression
 
 class ConstantSingleton(type):
     """

@@ -1,36 +1,7 @@
 import collections
 import logging
-
-class Expression(object):
-    def __init__(self, *args, **kwargs):
-        pass
-
-    def eval(self, *args, **kwargs):
-        pass
-
-    def __repr__(self):
-        raise Exception("No representation implemented for %s" % str(self.__class__))
-
-    def __str__(self):
-        raise Exception("No string representation implemented for %s" % str(self.__class__))
-
-    def __eq__(self, other):
-        raise Exception('equality is not defined on expression %s' % str(self.__class__))
-
-    def __ne__(self, other):
-        raise Exception('unequality is not defined on expression %s' % str(self.__class__))
-
-    def __lt__(self, other):
-        raise Exception('less-than-operator is not defined on expression %s' % str(self.__class__))
-
-    def __le__(self, other):
-        raise Exception('less-equals-operator is not defined on expression %s' % str(self.__class__))
-
-    def __gt__(self, other):
-        raise Exception('greater-than-operator is not defined on expression %s' % str(self.__class__))
-
-    def __ge__(self, other):
-        raise Exception('greater-equals-operator is not defined on expression %s' % str(self.__class__))
+from expression import Expression
+from lispeln.scheme.constants import Boolean
 
 
 class Conditional(Expression):
@@ -45,6 +16,21 @@ class Conditional(Expression):
             return self.consequent.eval(env)
         else:
             return self.alternate.eval(env)
+
+
+class And(Expression):
+    def __init__(self, *args, **kwargs):
+        super(And, self).__init__(*args, **kwargs)
+        self.args = args
+
+    def eval(self, env):
+        res = Boolean(True)
+        for arg in self.args:
+            if arg == Boolean(False):
+                return Boolean(False)
+            else:
+                res = arg
+        return res.eval(env)
 
 class Define(Expression):
     def __init__(self, symbol, expression, *args, **kwargs):

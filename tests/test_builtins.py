@@ -103,26 +103,3 @@ class BuiltInsTestCase(unittest.TestCase):
         res = Call(Symbol('-'), Symbol('a'), Symbol('b')).eval(env)
         self.assertAlmostEquals(res.value, Float(-1.3).value)
 
-    def test_and(self):
-
-        env = Environment(None)
-        define_builtins(env)
-
-        env['a'] = Float(1.5)
-        env['b'] = Float(0.3)
-
-        res = Call(Symbol('and'), Symbol('a'), Symbol('b')).eval(env)
-        self.assertEquals(res, Symbol('b').eval(env))
-
-        env['a'] = Boolean(False)
-
-        res = Call(Symbol('and'), Symbol('a'), Symbol('b')).eval(env)
-        self.assertEquals(res, Boolean(False))
-
-        env['a'] = Boolean(True)
-
-        res = Call(Symbol('and'), Symbol('a'), Symbol('b')).eval(env)
-        self.assertEquals(res, Symbol('b').eval(env))
-
-        res = Call(Symbol('and')).eval(env)
-        self.assertEquals(res, Boolean(True))

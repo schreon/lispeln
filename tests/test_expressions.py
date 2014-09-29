@@ -1,8 +1,8 @@
 import unittest
 from lispeln.scheme.builtins import _plus
 
-from lispeln.scheme.constants import Integer, Boolean
-from lispeln.scheme.expressions import Symbol, Environment, Procedure, Call, Lambda, Conditional, Define, Set
+from lispeln.scheme.constants import Integer, Boolean, Float
+from lispeln.scheme.expressions import Symbol, Environment, Procedure, Call, Lambda, Conditional, Define, Set, And
 
 
 class ExpressionTestCase(unittest.TestCase):
@@ -113,6 +113,28 @@ class ExpressionTestCase(unittest.TestCase):
         # TODO: test quote
         # TODO: implement external representations
 
+    def test_and(self):
+
+        env = Environment(None)
+
+        env['a'] = Float(1.5)
+        env['b'] = Float(0.3)
+
+        res = And(Symbol('a'), Symbol('b')).eval(env)
+        self.assertEquals(res, Symbol('b').eval(env))
+
+        env['a'] = Boolean(False)
+
+        res = And(Symbol('a'), Symbol('b')).eval(env)
+        self.assertEquals(res, Boolean(False))
+
+        env['a'] = Boolean(True)
+
+        res = And(Symbol('a'), Symbol('b')).eval(env)
+        self.assertEquals(res, Symbol('b').eval(env))
+
+        res = And().eval(env)
+        self.assertEquals(res, Boolean(True))
 
 
 if __name__ == '__main__':
