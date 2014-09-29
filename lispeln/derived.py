@@ -54,3 +54,13 @@ class Let(Expression):
         for (symbol, value) in self.definitions:
             scope[symbol] = value
         return self.expression.eval(scope)
+
+class Begin(Expression):
+    def __init__(self, *expressions):
+        super(Begin, self).__init__()
+        self.expressions = expressions
+
+    def eval(self, environment):
+        for expr in self.expressions[:-1]:
+            expr.eval(environment)
+        return self.expressions[-1].eval(environment)
