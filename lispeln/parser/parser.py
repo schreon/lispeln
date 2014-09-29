@@ -1,5 +1,5 @@
 from lispeln.scheme.constants import Integer, Float, Boolean
-from lispeln.scheme.expressions import Symbol
+from lispeln.scheme.environment import Symbol
 import re
 
 patterns = {

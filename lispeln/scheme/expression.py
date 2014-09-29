@@ -2,9 +2,6 @@ class Expression(object):
     def __init__(self, *args, **kwargs):
         pass
 
-    def eval(self, *args, **kwargs):
-        pass
-
     def __repr__(self):
         raise Exception("No representation implemented for %s" % str(self.__class__))
 
@@ -28,3 +25,8 @@ class Expression(object):
 
     def __ge__(self, other):
         raise Exception('greater-equals-operator is not defined on expression %s' % str(self.__class__))
+
+class Quote(Expression):
+    def __init__(self, expression, *args, **kwargs):
+        super(Quote, self).__init__(*args, **kwargs)
+        self.expression = expression

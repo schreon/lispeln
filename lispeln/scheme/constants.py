@@ -18,12 +18,6 @@ class Constant(Expression):
         super(Constant, self).__init__(*args, **kwargs)
         self.value = value
 
-    def eval(self, environment):
-        """
-        Contants evaluate to themselves
-        """
-        return self
-
     def __eq__(self, other):
         return self.value == other.value
 

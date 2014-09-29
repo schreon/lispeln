@@ -1,7 +1,9 @@
+from lispeln.scheme.assignment import Define
 from lispeln.scheme.builtins import _plus
 from lispeln.scheme.constants import Nil, Integer
 from lispeln.scheme.derived import Cons, Let, Begin
-from lispeln.scheme.expressions import Symbol, Environment, Procedure, Define, Call
+from lispeln.scheme.environment import Symbol, Environment
+from lispeln.scheme.procedure import Procedure, Call
 
 __author__ = 'schreon'
 

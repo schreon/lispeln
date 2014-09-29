@@ -1,8 +1,11 @@
 import unittest
+from lispeln.scheme.assignment import Define, Set
 from lispeln.scheme.builtins import _plus
+from lispeln.scheme.environment import Symbol, Environment
+from lispeln.scheme.logic import If, And
 
 from lispeln.scheme.constants import Integer, Boolean, Float
-from lispeln.scheme.expressions import Symbol, Environment, Procedure, Call, Lambda, Conditional, Define, Set, And
+from lispeln.scheme.procedure import Procedure, Call, Lambda
 
 
 class ExpressionTestCase(unittest.TestCase):
@@ -84,8 +87,8 @@ class ExpressionTestCase(unittest.TestCase):
         env['a'] = Integer(1)
         env['b'] = Integer(5)
 
-        self.assertEquals(Conditional(Boolean(True), Symbol('a'), Symbol('b')).eval(env), Integer(1))
-        self.assertEquals(Conditional(Boolean(False), Symbol('a'), Symbol('b')).eval(env), Integer(5))
+        self.assertEquals(If(Boolean(True), Symbol('a'), Symbol('b')).eval(env), Integer(1))
+        self.assertEquals(If(Boolean(False), Symbol('a'), Symbol('b')).eval(env), Integer(5))
 
     def test_define(self):
         env = Environment(None)

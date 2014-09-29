@@ -1,8 +1,10 @@
+from lispeln.evluator import evaluate
 from lispeln.printer.derived import print_cons, print_expression
 from lispeln.scheme.builtins import _plus
 from lispeln.scheme.constants import Nil, Integer, Boolean, Float, String
 from lispeln.scheme.derived import Cons
-from lispeln.scheme.expressions import Symbol, Environment, Procedure, Lambda
+from lispeln.scheme.environment import Symbol, Environment
+from lispeln.scheme.procedure import Procedure, Lambda
 
 __author__ = 'schreon'
 
@@ -36,7 +38,8 @@ class PrinterTestCase(unittest.TestCase):
         env['a'] = Integer(123)
         env['b'] = Integer(42)
 
-        s = print_expression(Cons(Symbol('a'), Symbol('b')).eval(env))
+        expr = Cons(Symbol('a'), Symbol('b'))
+        s = print_expression(evaluate(expr, env))
         self.assertEquals("(123 . 42)", s)
 
         env['b'] = Integer(42.42)
@@ -61,7 +64,7 @@ class PrinterTestCase(unittest.TestCase):
         env['f'] = Procedure(_plus)
 
         l = Lambda([Symbol('c')], [Symbol('f'), Symbol('a'), Symbol('b'), Symbol('c')])
-        s = print_expression(l.eval(env))
+        s = print_expression(evaluate(l, env))
         self.assertEquals('#<procedure>', s)
 
         logging.info("Testing if procedure name is passed ...")

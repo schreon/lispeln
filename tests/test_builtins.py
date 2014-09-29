@@ -2,7 +2,8 @@ import unittest
 from lispeln.scheme.builtins import define_builtins
 
 from lispeln.scheme.constants import Float, Integer, Boolean, String
-from lispeln.scheme.expressions import Environment, Call, Symbol
+from lispeln.scheme.environment import Symbol, Environment
+from lispeln.scheme.procedure import Call
 
 
 class BuiltInsTestCase(unittest.TestCase):
