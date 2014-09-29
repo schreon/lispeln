@@ -106,5 +106,11 @@ class ExpressionTestCase(unittest.TestCase):
         set_.eval(env)
         self.assertEquals(env['a'], Integer(666))
 
+    def test_quote(self):
+        env = Environment(None)
+
+        # TODO: test quote
+        # TODO: implement external representations
+
 if __name__ == '__main__':
     unittest.main()

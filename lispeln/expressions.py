@@ -26,7 +26,6 @@ class Conditional(Expression):
         else:
             return self.alternate.eval(env)
 
-
 class Define(Expression):
     def __init__(self, symbol, expression, *args, **kwargs):
         super(Define, self).__init__(*args, **kwargs)
@@ -46,6 +45,14 @@ class Set(Expression):
         if self.symbol not in env:
             raise Exception("Unknown Symbol %s" % str(self.symbol))
         env[self.symbol] = self.expression.eval(env)
+
+class Quote(Expression):
+    def __init__(self, expression, *args, **kwargs):
+        super(Quote, self).__init__(*args, **kwargs)
+        self.expression = expression
+
+    def eval(self, env):
+        return self.expression
 
 class Procedure(object):
 
