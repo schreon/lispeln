@@ -1,6 +1,6 @@
 import unittest
-from lispeln.constants import Float, Integer
-from lispeln.expressions import Symbol, Environment, Procedure, Expression, Call, Lambda
+from lispeln.constants import Float, Integer, Boolean
+from lispeln.expressions import Symbol, Environment, Procedure, Expression, Call, Lambda, Conditional, Define, Set
 
 
 def plus(*args):
@@ -85,7 +85,35 @@ class ExpressionTestCase(unittest.TestCase):
         env['x'] = Integer(50)
         call = Call(Symbol('g'), Symbol('x'))
         self.assertEquals(call.eval(env), Integer(56))
+        env['x'] = Integer(10)
+        self.assertEquals(call.eval(env), Integer(16))
 
+    def test_conditional(self):
+        env = Environment(None)
+        env['a'] = Integer(1)
+        env['b'] = Integer(5)
+
+        self.assertEquals(Conditional(Boolean(True), Symbol('a'), Symbol('b')).eval(env), Integer(1))
+        self.assertEquals(Conditional(Boolean(False), Symbol('a'), Symbol('b')).eval(env), Integer(5))
+
+    def test_define(self):
+        env = Environment(None)
+        Define(Symbol('a'), Integer(42)).eval(env)
+
+        self.assertEquals(env['a'], Integer(42))
+
+    def test_set(self):
+        set_ = Set(Symbol('a'), Integer(666))
+
+        env = Environment(None)
+
+        self.assertRaises(Exception, set_.eval, env)
+
+        Define(Symbol('a'), Integer(42)).eval(env)
+        self.assertEquals(env['a'], Integer(42))
+
+        set_.eval(env)
+        self.assertEquals(env['a'], Integer(666))
 
 if __name__ == '__main__':
     unittest.main()

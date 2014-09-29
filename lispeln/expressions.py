@@ -13,6 +13,39 @@ class Expression(object):
     def __str__(self):
         return str(self.value)
 
+class Conditional(Expression):
+    def __init__(self, test, consequent, alternate):
+        super(Conditional, self).__init__()
+        self.test = test
+        self.consequent = consequent
+        self.alternate = alternate
+
+    def eval(self, env):
+        if self.test.eval(env).value == True:
+            return self.consequent.eval(env)
+        else:
+            return self.alternate.eval(env)
+
+
+class Define(Expression):
+    def __init__(self, symbol, expression, *args, **kwargs):
+        super(Define, self).__init__(*args, **kwargs)
+        self.symbol = symbol
+        self.expression = expression
+
+    def eval(self, env):
+        env[self.symbol] = self.expression.eval(env)
+
+class Set(Expression):
+    def __init__(self, symbol, expression, *args, **kwargs):
+        super(Set, self).__init__(*args, **kwargs)
+        self.symbol = symbol
+        self.expression = expression
+
+    def eval(self, env):
+        if self.symbol not in env:
+            raise Exception("Unknown Symbol %s" % str(self.symbol))
+        env[self.symbol] = self.expression.eval(env)
 
 class Procedure(object):
 
