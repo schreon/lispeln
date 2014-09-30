@@ -17,3 +17,13 @@ class Begin(Expression):
     def __init__(self, *expressions):
         super(Begin, self).__init__()
         self.expressions = expressions
+
+class Cdr(Expression):
+    def __init__(self, cons, *args, **kwargs):
+        super(Cdr, self).__init__(*args, **kwargs)
+        self.cons = cons
+
+class IsEmpty(Expression):
+    def __init__(self, cons, *args, **kwargs):
+        super(IsEmpty, self).__init__(*args, **kwargs)
+        self.cons = cons

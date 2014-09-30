@@ -1,3 +1,5 @@
+import logging
+
 class Expression(object):
     def __init__(self, *args, **kwargs):
         pass
@@ -25,6 +27,7 @@ class Expression(object):
 
     def __ge__(self, other):
         raise Exception('greater-equals-operator is not defined on expression %s' % str(self.__class__))
+
 
 class Quote(Expression):
     def __init__(self, expression, *args, **kwargs):
