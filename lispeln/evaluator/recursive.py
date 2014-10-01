@@ -17,8 +17,8 @@ def eval_set(_set, env):
 
 def eval_let(let, env):
     scope = Environment(env)
-    for (symbol, value) in let.definitions:
-        scope[symbol] = value
+    for (symbol, value) in let.bindings:
+        scope[symbol] = evaluate(value, scope)
     return evaluate(let.expression, scope)
 
 def eval_constant(constant, env):
@@ -62,10 +62,10 @@ def eval_lambda(_lambda, env, name=None):
             scope[symbol] = evaluate(value, env)
 
         # 2. evaluate all the operands
-        operands = [evaluate(op, scope) for op in _lambda.body]
+        operands = [evaluate(op, scope) for op in _lambda.body[1:]]
 
-        # return the last value
-        return operands[-1]
+        # execute the operator
+        return operator(*operands)
 
     return Procedure(implementation, num_args=len(_lambda.formals), name=name)
 

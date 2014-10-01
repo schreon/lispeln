@@ -1,8 +1,4 @@
-from lispeln.scheme.constants import Boolean
 from lispeln.scheme.expression import Syntax
-
-__author__ = 'schreon'
-
 
 class If(Syntax):
     def __init__(self, test, consequent, alternate):

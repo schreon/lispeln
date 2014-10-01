@@ -87,12 +87,29 @@ def _parse_call(items):
     logging.info("Parse Call %s -> %s" % (repr(operator), repr(operands)))
     return Call(operator, *operands)
 
+def _parse_let(items):
+    bindings, expression = items
+
+    bindings = [(_parse(symbol), _parse(value)) for (symbol, value) in bindings]
+    expression = _parse(expression)
+
+    logging.info("Parse Let %s -> %s" % (repr(bindings), repr(expression)))
+    return Let(bindings, expression)
 
 syntax = {
     'begin': _parse_begin,
     'define': _parse_define,
     'set!': _parse_set,
     'lambda': _parse_lambda,
+    'let': _parse_let,
+    # 'and': _parse_and,
+    # 'or': _parse_or,
+    # 'xor': _parse_xor,
+    # 'not': _parse_not,
+    # 'if': _parse_if,
+    # 'cons': _parse_cons,
+    # 'car': _parse_car,
+    # 'cdr': _parse_cdr,
 }
 
 def _parse_token(tok):
@@ -117,20 +134,8 @@ def _parse_list(_list):
     if isinstance(first, Constant):
         return [_parse(item) for item in _list]
 
-    if isinstance(first, str):
-        if first == 'lambda':
-            return _parse_lambda(_list[1:])
-
-        if first == 'begin':
-            return _parse_begin(_list[1:])
-
-        if first == 'define':
-            return _parse_define(_list[1:])
-
-        if first == 'set!':
-            return _parse_set(_list[1:])
-
-        raise Exception("Cannot parse Syntax: %s" % repr(first))
+    if first in syntax:
+        return syntax[first](_list[1:])
 
     # if the first argument is syntax, create a syntax object from this, else, it must be a symbol and this is a call
     return _parse_call(_list)

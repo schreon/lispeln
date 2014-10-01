@@ -73,5 +73,16 @@ class ParserTestCase(unittest.TestCase):
         tokens = tokenize(string)
         self.assertEquals(tokens, ['+', '1', '3'])
 
+    def test_let(self):
+        env = Environment(None)
+        define_builtins(env)
+
+        code = "(let ((x 2) (y 3)) (* x y))"
+        tokens = tokenize(code)
+        expression = parse(tokens)
+        actual = evaluate(expression, env)
+        expected = Integer(6)
+        self.assertEquals(expected, actual)
+
 if __name__ == '__main__':
     unittest.main()

@@ -1,5 +1,4 @@
 import logging
-import collections
 from lispeln.scheme.assignment import Define, Set
 from lispeln.scheme.constants import Integer, Float, Boolean
 from lispeln.scheme.derived import Let, Cons

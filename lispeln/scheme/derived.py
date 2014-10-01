@@ -8,9 +8,9 @@ class Cons(Syntax):
         self.rest = rest
 
 class Let(Syntax):
-    def __init__(self, definitions, expression):
+    def __init__(self, bindings, expression):
         super(Let, self).__init__()
-        self.definitions = definitions
+        self.bindings = bindings
         self.expression = expression
 
 class Begin(Syntax):
