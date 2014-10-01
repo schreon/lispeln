@@ -1,5 +1,5 @@
-from lispeln.evluator import evaluate
-from lispeln.printer.derived import print_cons, print_expression
+from lispeln.evaluator.recursive import evaluate
+from lispeln.printer.derived import print_expression
 from lispeln.scheme.builtins import _plus
 from lispeln.scheme.constants import Nil, Integer, Boolean, Float, String
 from lispeln.scheme.derived import Cons
@@ -44,16 +44,16 @@ class PrinterTestCase(unittest.TestCase):
 
         env['b'] = Integer(42.42)
 
-        s = print_expression(Cons(Symbol('a'), Symbol('b')).eval(env))
+        s = print_expression(evaluate(Cons(Symbol('a'), Symbol('b')), env))
         self.assertEquals("(123 . 42.42)", s)
 
-        s = print_expression(Cons(Nil(), Nil()).eval(env))
+        s = print_expression(evaluate(Cons(Nil(), Nil()), env))
         self.assertEquals("(())", s)
 
-        s = print_expression(Cons(Nil(), Cons(Nil(), Nil())).eval(env))
+        s = print_expression(evaluate(Cons(Nil(), Cons(Nil(), Nil())), env))
         self.assertEquals("(() ())", s)
 
-        s = print_expression(Cons(Cons(Nil(), Nil()), Nil()).eval(env))
+        s = print_expression(evaluate(Cons(Cons(Nil(), Nil()), Nil()), env))
         self.assertEquals("((()))", s)
 
     def test_proc(self):
