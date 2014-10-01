@@ -1,7 +1,7 @@
 import unittest
 from lispeln.evaluator.recursive import evaluate
 from lispeln.scheme.assignment import Define, Set
-from lispeln.scheme.builtins import _plus
+from lispeln.scheme.builtins import _plus, define_builtins
 from lispeln.scheme.environment import Symbol, Environment
 from lispeln.scheme.logic import If, And
 
@@ -58,17 +58,19 @@ class ExpressionTestCase(unittest.TestCase):
     def test_lambda(self):
 
         env = Environment(None)
-        env['a'] = Integer(1)
-        env['b'] = Integer(5)
-        env['c'] = Integer(-100)
-        env['f'] = Procedure(_plus)
-        env['g'] = Lambda([Symbol('c')], [Symbol('f'), Symbol('a'), Symbol('b'), Symbol('c')])
+        define_builtins(env)
 
-        env['x'] = Integer(50)
+        env['a'] = Integer(1000)
+        env['b'] = Integer(100)
+        env['c'] = Integer(10)
+        env['g'] = Lambda([Symbol('c')], [Symbol('+'), Symbol('a'), Symbol('b'), Symbol('c')])
+
+        env['x'] = Integer(1)
         call = Call(Symbol('g'), Symbol('x'))
-        self.assertEquals(evaluate(call, env), Integer(56))
-        env['x'] = Integer(10)
-        self.assertEquals(evaluate(call, env), Integer(16))
+
+        self.assertEquals(evaluate(call, env), Integer(1101))
+        env['x'] = Integer(0.5)
+        self.assertEquals(evaluate(call, env), Float(1100.5))
 
     def test_conditional(self):
         env = Environment(None)
@@ -89,7 +91,7 @@ class ExpressionTestCase(unittest.TestCase):
 
         env = Environment(None)
 
-        self.assertRaises(Exception, evaluate(set_, env))
+        self.assertRaises(Exception, evaluate, (set_, env))
 
         evaluate(Define(Symbol('a'), Integer(42)), env)
         self.assertEquals(env['a'], Integer(42))

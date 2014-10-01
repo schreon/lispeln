@@ -21,6 +21,8 @@ class Constant(Expression):
     def __eq__(self, other):
         return self.value == other.value
 
+    def __repr__(self):
+        return "<%s:%s>" % (self.__class__.__name__, str(self.value))
 class Nil(Constant):
     def __init__(self):
         super(Nil, self).__init__(None)

@@ -2,16 +2,18 @@ import logging
 from lispeln.scheme.assignment import Define, Set
 from lispeln.scheme.constants import Integer, Float, Boolean, Nil
 from lispeln.scheme.derived import Let, Cons
-from lispeln.scheme.environment import Symbol
+from lispeln.scheme.environment import Symbol, Environment
 from lispeln.scheme.logic import And, If
 from lispeln.scheme.procedure import Call, Procedure, Lambda
 
 
 def eval_define(define, env):
-    raise Exception("not implemented yet")
+    env[define.symbol] = evaluate(define.expression, env)
 
 def eval_set(_set, env):
-    raise Exception("not implemented yet")
+    if _set.symbol not in env:
+        raise Exception("Unknown Symbol %s" % str(_set.symbol.value))
+    env[_set.symbol] = evaluate(_set.expression, env)
 
 def eval_let(let, env):
     raise Exception("not implemented yet")
@@ -20,28 +22,66 @@ def eval_constant(constant, env):
     return constant
 
 def eval_cons(cons, env):
-    logging.info("evaluate cons")
     return Cons(evaluate(cons.first, env), evaluate(cons.rest, env))
 
 def eval_symbol(symbol, env):
     if symbol not in env:
         raise Exception("Unbound identifier %s" % symbol.value)
-    return env[symbol]
+    value = env[symbol]
+    if isinstance(value, Lambda):
+        return eval_lambda(value, env, name=symbol.value)
+    else:
+        return evaluate(value, env)
 
 def eval_call(call, env):
-    raise Exception("not implemented yet")
+    operands = [evaluate(operand, env) for operand in call.operands]
+    operator = evaluate(call.operator, env)
+
+    return operator(*operands)
 
 def eval_procedure(proc, env):
-    raise Exception("not implemented yet")
+    return proc
 
-def eval_lambda(_lambda, env):
-    raise Exception("not implemented yet")
+def eval_lambda(_lambda, env, name=None):
+    # create a nested environment
+    scope = Environment(env)
+
+    def implementation(*arguments):
+        logging.info("Lambda --> implementation")
+
+        formals = _lambda.formals
+
+        if len(arguments) != len(formals):
+            raise Exception("Invalid number of Arguments: %d, Expected: %d" % (len(arguments), len(_lambda.formals)))
+
+        # 1. update the scope depending on the positional values in the formals
+        for symbol, value in zip(formals, arguments):
+            scope[symbol] = evaluate(value, env)
+
+        # 2. evaluate the operands depending on the current situation
+        operator = evaluate(_lambda.body[0], scope)
+        operands = [evaluate(op, scope) for op in _lambda.body[1:]]
+
+        # execute the operator
+        return operator(*operands)
+
+    return Procedure(implementation, num_args=len(_lambda.formals), name=name)
 
 def eval_and(_and, env):
-    raise Exception("not implemented yet")
+    res = Boolean(True)
+    for arg in _and.args:
+        arg = evaluate(arg, env)
+        if arg == Boolean(False):
+            return Boolean(False)
+        else:
+            res = arg
+    return res
 
 def eval_if(_if, env):
-    raise Exception("not implemented yet")
+    if evaluate(_if.test, env).value == True:
+        return evaluate(_if.consequent, env)
+    else:
+        return evaluate(_if.alternate, env)
 
 eval_map = {
     If: eval_if,
@@ -65,4 +105,5 @@ def evaluate(expression, environment):
     if key not in eval_map:
         raise Exception("Unknown expression: %s" % key.__name__)
     else:
+        logging.info("Evaluate %s" % key.__name__)
         return eval_map[key](expression, environment)
