@@ -10,5 +10,11 @@ class If(Syntax):
 
 class And(Syntax):
     def __init__(self, *args, **kwargs):
-        super(And, self).__init__(*args, **kwargs)
+        super(And, self).__init__()
         self.args = args
+
+class Or(Syntax):
+    def __init__(self, *args, **kwargs):
+        super(Or, self).__init__()
+        self.args = args
+

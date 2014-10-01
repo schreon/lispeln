@@ -91,6 +91,7 @@ def define_builtins(env):
     env['*'] = Procedure(_mul, name='*')
     env['/'] = Procedure(_div, name='/')
     env['eq?'] = Procedure(_equals, num_args=2, name='eq?')
+    env['='] = Procedure(_equals, num_args=2, name='=')
     env['<'] = Procedure(_less_than, num_args=2, name='<')
     env['<='] = Procedure(_less_equal, num_args=2, name='<=')
     env['>'] = Procedure(_greater_than, num_args=2, name='>')

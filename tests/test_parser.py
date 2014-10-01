@@ -2,9 +2,8 @@ import logging
 from lispeln.evaluator.recursive import evaluate
 from lispeln.parser.tokenizer import tokenize
 from lispeln.parser.parser import parse
-from lispeln.printer.derived import print_expression
 from lispeln.scheme.builtins import define_builtins
-from lispeln.scheme.constants import Integer
+from lispeln.scheme.constants import Integer, Boolean
 from lispeln.scheme.derived import Begin
 from lispeln.scheme.environment import Environment, Symbol
 from lispeln.scheme.procedure import Call
@@ -14,6 +13,9 @@ __author__ = 'schreon'
 import unittest
 
 logging.basicConfig(level=logging.INFO)
+
+def execute(code, env):
+    return evaluate(parse(tokenize(code)), env)
 
 class ParserTestCase(unittest.TestCase):
 
@@ -83,6 +85,23 @@ class ParserTestCase(unittest.TestCase):
         actual = evaluate(expression, env)
         expected = Integer(6)
         self.assertEquals(expected, actual)
+
+    def test_and(self):
+        env = Environment(None)
+        define_builtins(env)
+
+        self.assertEquals(Boolean(True), execute("(and (= 2 2) (> 2 1))", env))
+        self.assertEquals(Boolean(False), execute("(and (= 2 2) (< 2 1))", env))
+        self.assertEquals(Integer(10), execute("(and 1 2 5 10) ", env))
+        self.assertEquals(Boolean(True), execute("(and)", env))
+
+    def test_or(self):
+        env = Environment(None)
+        define_builtins(env)
+
+        self.assertEquals(Boolean(True), execute("(or (= 2 2) (> 2 1))", env))
+        self.assertEquals(Boolean(True), execute("(or (= 2 2) (< 2 1))", env))
+        self.assertEquals(Boolean(False), execute("(or #f #f #f)", env))
 
 if __name__ == '__main__':
     unittest.main()

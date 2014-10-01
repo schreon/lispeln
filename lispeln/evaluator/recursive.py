@@ -3,7 +3,7 @@ from lispeln.scheme.assignment import Define, Set
 from lispeln.scheme.constants import Integer, Float, Boolean, Nil
 from lispeln.scheme.derived import Let, Cons, Begin
 from lispeln.scheme.environment import Symbol, Environment
-from lispeln.scheme.logic import And, If
+from lispeln.scheme.logic import And, If, Or
 from lispeln.scheme.procedure import Call, Procedure, Lambda
 
 
@@ -79,6 +79,16 @@ def eval_and(_and, env):
             res = arg
     return res
 
+def eval_or(_or, env):
+    res = Boolean(False)
+    for arg in _or.args:
+        arg = evaluate(arg, env)
+        if arg == Boolean(True):
+            return Boolean(True)
+        else:
+            res = arg
+    return res
+
 def eval_if(_if, env):
     if evaluate(_if.test, env).value == True:
         return evaluate(_if.consequent, env)
@@ -95,6 +105,7 @@ def eval_begin(begin, environment):
 eval_map = {
     If: eval_if,
     And: eval_and,
+    Or: eval_or,
     Define: eval_define,
     Set: eval_set,
     Let: eval_let,
@@ -108,7 +119,6 @@ eval_map = {
     Procedure: eval_procedure,
     Lambda: eval_lambda,
     Begin: eval_begin,
-    Let: eval_let
 }
 
 def evaluate(expression, environment):

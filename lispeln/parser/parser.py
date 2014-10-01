@@ -4,7 +4,7 @@ from lispeln.scheme.constants import Integer, Float, Boolean, Nil, Constant
 from lispeln.scheme.derived import Let, Cons, Begin
 from lispeln.scheme.environment import Symbol
 from lispeln.scheme.expression import Expression
-from lispeln.scheme.logic import If, And
+from lispeln.scheme.logic import If, And, Or
 from lispeln.scheme.procedure import Lambda, Call
 import re
 
@@ -96,14 +96,20 @@ def _parse_let(items):
     logging.info("Parse Let %s -> %s" % (repr(bindings), repr(expression)))
     return Let(bindings, expression)
 
+def _parse_and(expressions):
+     return And(*[_parse(expr) for expr in expressions])
+
+def _parse_or(expressions):
+    return Or(*[_parse(expr) for expr in expressions])
+
 syntax = {
     'begin': _parse_begin,
     'define': _parse_define,
     'set!': _parse_set,
     'lambda': _parse_lambda,
     'let': _parse_let,
-    # 'and': _parse_and,
-    # 'or': _parse_or,
+    'and': _parse_and,
+    'or': _parse_or,
     # 'xor': _parse_xor,
     # 'not': _parse_not,
     # 'if': _parse_if,
