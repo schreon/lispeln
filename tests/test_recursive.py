@@ -65,7 +65,7 @@ class ExpressionTestCase(unittest.TestCase):
         env['a'] = Integer(1000)
         env['b'] = Integer(100)
         env['c'] = Integer(10)
-        env['g'] = Lambda([Symbol('c')], [Symbol('+'), Symbol('a'), Symbol('b'), Symbol('c')])
+        env['g'] = Lambda([Symbol('c')], Call(Symbol('+'), Symbol('a'), Symbol('b'), Symbol('c')))
 
         env['x'] = Integer(1)
         call = Call(Symbol('g'), Symbol('x'))
@@ -73,6 +73,14 @@ class ExpressionTestCase(unittest.TestCase):
         self.assertEquals(evaluate(call, env), Integer(1101))
         env['x'] = Float(0.5)
         self.assertEquals(evaluate(call, env), Float(1100.5))
+
+        env['g'] = Lambda([Symbol('n')], Set(Symbol('n'), Integer(42)), Call(Symbol('+'), Symbol('n'), Integer(1)))
+        env['n'] = Integer(100)
+        call = Call(Symbol('g'), Symbol('n'))
+        res = evaluate(call, env)
+        self.assertEquals(res, Integer(43))
+        self.assertEquals(evaluate(Symbol('n'), env), Integer(100))
+
 
     def test_conditional(self):
         env = Environment(None)

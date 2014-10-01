@@ -36,8 +36,26 @@ class ParserTestCase(unittest.TestCase):
         expected = Integer(5)
         self.assertEquals(expected, actual)
 
+    def test_begin(self):
+        env = Environment(None)
+
         actual = evaluate(parse(tokenize("(begin (define x 1) (+ x 2))")), env)
         expected = Integer(3)
+        self.assertEquals(expected, actual)
+
+    def test_lambda(self):
+        env = Environment(None)
+        define_builtins(env)
+
+        env['n'] = Integer(42)
+
+        tokens = tokenize("((lambda (n) (set! n 42) (+ n 1)) n)")
+
+        logging.info(tokens)
+
+        expression = parse(tokens)
+        actual = evaluate(expression, env)
+        expected = Integer(43)
         self.assertEquals(expected, actual)
 
 if __name__ == '__main__':

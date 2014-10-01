@@ -28,6 +28,8 @@ class Expression(object):
     def __ge__(self, other):
         raise Exception('greater-equals-operator is not defined on expression %s' % str(self.__class__))
 
+class Syntax(object):
+    pass
 
 class Quote(Expression):
     def __init__(self, expression, *args, **kwargs):

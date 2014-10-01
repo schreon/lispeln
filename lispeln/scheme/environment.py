@@ -27,6 +27,8 @@ class Symbol(Expression):
         self.value = value
 
 
+    def __repr__(self):
+        return "<Symbol:%s>" % self.value
 
 class Environment(collections.MutableMapping):
 
