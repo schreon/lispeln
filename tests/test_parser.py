@@ -58,5 +58,20 @@ class ParserTestCase(unittest.TestCase):
         expected = Integer(43)
         self.assertEquals(expected, actual)
 
+        code = "((lambda (n) (set! n (+ n 1)) (set! n (* n 2)) n) 4)"
+        tokens = tokenize(code)
+        expression = parse(tokens)
+        actual = evaluate(expression, env)
+        expected = Integer(10)
+        self.assertEquals(expected, actual)
+        n = evaluate(Symbol('n'), env)
+        self.assertEquals(n, Integer(42))
+
+    def test_comment(self):
+
+        string = "(+ 1\n; test comment with whitespace\n3)"
+        tokens = tokenize(string)
+        self.assertEquals(tokens, ['+', '1', '3'])
+
 if __name__ == '__main__':
     unittest.main()

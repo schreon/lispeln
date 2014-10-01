@@ -27,6 +27,34 @@ def _minus(*args):
         return Integer(s)
     raise Exception("Invalid result type: %s" % str(type(s)))
 
+def _mul(*args):
+    for arg in args:
+        if type(arg) not in [Float, Integer]:
+            raise Exception("Invalid argument type: %s - Expected: Float or Integer" % str(type(arg)))
+    s = args[0].value
+    for arg in args[1:]:
+        s *= arg.value
+    if type(s) == float:
+        return Float(s)
+    if type(s) == int:
+        return Integer(s)
+    raise Exception("Invalid result type: %s" % str(type(s)))
+
+def _div(*args):
+    for arg in args:
+        if type(arg) not in [Float, Integer]:
+            raise Exception("Invalid argument type: %s - Expected: Float or Integer" % str(type(arg)))
+    s = args[0].value
+    q = 1
+    for arg in args[1:]:
+        q *= arg.value
+    s /= q
+    if type(s) == float:
+        return Float(s)
+    if type(s) == int:
+        return Integer(s)
+    raise Exception("Invalid result type: %s" % str(type(s)))
+
 def _equals(arg1, arg2):
     if arg1 == arg2:
         return Boolean(True)
@@ -60,6 +88,8 @@ def _greater_equal(arg1, arg2):
 def define_builtins(env):
     env['+'] = Procedure(_plus, name='+')
     env['-'] = Procedure(_minus, name='-')
+    env['*'] = Procedure(_mul, name='*')
+    env['/'] = Procedure(_div, name='/')
     env['eq?'] = Procedure(_equals, num_args=2, name='eq?')
     env['<'] = Procedure(_less_than, num_args=2, name='<')
     env['<='] = Procedure(_less_equal, num_args=2, name='<=')

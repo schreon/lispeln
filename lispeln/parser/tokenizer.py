@@ -11,10 +11,14 @@ def read(scanner):
     logging.info("read")
 
     scanner.skip_whitespace()
+
     next = scanner.peek()
 
     if next == '(':
         return read_list(scanner)
+    elif next == ';':
+        scanner.skip_comment()
+        return read(scanner)
     else:
         return read_token(scanner)
 
