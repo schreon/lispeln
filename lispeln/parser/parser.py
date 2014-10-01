@@ -1,10 +1,9 @@
-from lispeln.scheme.constants import Integer, Float, Boolean
-from lispeln.scheme.environment import Symbol
-import re
+from lispeln.scheme.derived import Begin
 
-patterns = {
-    re.compile(r"^[0-9]+$") : Integer,
-    re.compile(r"^[0-9]+.[0-9]+$") : Float,
-    re.compile(r"^(?!\#%)(\#)?\.?[^\s\(\)\[\]\{\}\"\,\'\;\#\|\\]+$") : Symbol,
-    re.compile(r"false|true") : Boolean
-}
+__author__ = 'schreon'
+
+def parse(items):
+    return Begin([_parse(item) for item in items])
+
+def _parse(item):
+    pass

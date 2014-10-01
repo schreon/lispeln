@@ -15,6 +15,8 @@ class Constant(Expression):
     __metaclass__ = ConstantSingleton
 
     def __init__(self, value, *args, **kwargs):
+        if type(value) != self.internal_type:
+            raise Exception("Invalid type %s, excpected %s" % (str(type(value)), str(self.internal_type)))
         super(Constant, self).__init__(*args, **kwargs)
         self.value = value
 
@@ -23,6 +25,7 @@ class Constant(Expression):
 
     def __repr__(self):
         return "<%s:%s>" % (self.__class__.__name__, str(self.value))
+
 class Nil(Constant):
     def __init__(self):
         super(Nil, self).__init__(None)
@@ -47,13 +50,13 @@ class Number(Constant):
         return (self.value == other.value)
 
 class Integer(Number):
-    pass
+    internal_type = int
 
 class Float(Number):
-    pass
+    internal_type = float
 
 class String(Constant):
-    pass
+    internal_type = str
 
 class Boolean(Constant):
-    pass
+    internal_type = bool

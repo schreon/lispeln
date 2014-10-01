@@ -1,5 +1,6 @@
 __author__ = 'schreon'
 WHITESPACE = frozenset([' ', '\n', '\t'])
+TOKEN_END = frozenset([' ', '\n', '\t', ')'])
 
 class Scanner(object):
     def __init__(self, string):
@@ -83,9 +84,11 @@ class Scanner(object):
                 if self.matches(string):
                     return self.string[start:self.cursor]
             self.next()
+        return self.string[start:self.cursor]
+        #raise EndOfStringException("Could not find any of " + str(strings))
 
-        raise EndOfStringException("Could not find any of " + str(strings))
-
+    def token(self):
+        return self.until(*TOKEN_END)
 
     def consume(self, *strings):
         """

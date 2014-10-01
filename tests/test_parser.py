@@ -1,31 +1,19 @@
-from lispeln.parser.scanner import Scanner
+import logging
+from lispeln.parser.tokenizer import tokenize
+from lispeln.parser.parser import parse
 
 __author__ = 'schreon'
 
 import unittest
 
-
-class Parser(object):
-    def __init__(self,):
-        super(Parser, self).__init__()
-
-    def parse(self, string):
-        scanner = Scanner(string)
+logging.basicConfig(level=logging.INFO)
 
 class ParserTestCase(unittest.TestCase):
-    def test_initialization(self):
-        """
-        it does initialize correctly
-        """
-        Parser()
 
-    def test_plus(self):
-        """
-        it parses (+ 1 2)
-        """
-        parser = Parser()
-        output = parser.parse("(+ 1 2)")
-
+    def test_tokenizer(self):
+        self.assertEquals(tokenize("(+ 1 2)"), ['+', '1', '2'])
+        self.assertEquals(tokenize("(+ (1 2))"), ['+', ['1', '2']])
+        self.assertEquals(tokenize("1"), ['1'])
 
 
 if __name__ == '__main__':

@@ -2,10 +2,11 @@ import unittest
 from lispeln.evaluator.recursive import evaluate
 from lispeln.scheme.assignment import Define, Set
 from lispeln.scheme.builtins import _plus, define_builtins
+from lispeln.scheme.derived import Let, Begin
 from lispeln.scheme.environment import Symbol, Environment
 from lispeln.scheme.logic import If, And
 
-from lispeln.scheme.constants import Integer, Boolean, Float
+from lispeln.scheme.constants import Integer, Boolean, Float, String
 from lispeln.scheme.procedure import Procedure, Call, Lambda
 
 class ExpressionTestCase(unittest.TestCase):
@@ -14,6 +15,7 @@ class ExpressionTestCase(unittest.TestCase):
         self.assertIs(Symbol("a"), Symbol("a"))
         # Symbol created by Symbol should work
         self.assertIs(Symbol("a"), Symbol(Symbol("a")))
+
 
     def test_environment(self):
         root = Environment(None, a=1, b=2)
@@ -69,7 +71,7 @@ class ExpressionTestCase(unittest.TestCase):
         call = Call(Symbol('g'), Symbol('x'))
 
         self.assertEquals(evaluate(call, env), Integer(1101))
-        env['x'] = Integer(0.5)
+        env['x'] = Float(0.5)
         self.assertEquals(evaluate(call, env), Float(1100.5))
 
     def test_conditional(self):
@@ -129,6 +131,25 @@ class ExpressionTestCase(unittest.TestCase):
         res = evaluate(And(), env)
         self.assertEquals(res, Boolean(True))
 
+    def test_let(self):
+        env = Environment(None)
+        env['+'] = Procedure(_plus)
+        env['y'] = Integer(1)
 
+        let = Let([(Symbol('x'), Integer(10))], Call(Symbol('+'), Symbol('x'), Symbol('y')))
+
+        self.assertEquals(evaluate(let, env), Integer(11))
+        self.assertNotIn(Symbol('x'), env)
+
+    def test_begin(self):
+        env = Environment(None)
+
+        begin = Begin(
+            Define(Symbol('a'), Integer(42)),
+            Define(Symbol('b'), Integer(-42)),
+            Call(Procedure(_plus), Symbol('a'), Symbol('b'))
+        )
+
+        self.assertEquals(evaluate(begin, env), Integer(0))
 if __name__ == '__main__':
     unittest.main()

@@ -1,7 +1,7 @@
 import logging
 from lispeln.scheme.assignment import Define, Set
 from lispeln.scheme.constants import Integer, Float, Boolean, Nil
-from lispeln.scheme.derived import Let, Cons
+from lispeln.scheme.derived import Let, Cons, Begin
 from lispeln.scheme.environment import Symbol, Environment
 from lispeln.scheme.logic import And, If
 from lispeln.scheme.procedure import Call, Procedure, Lambda
@@ -16,7 +16,10 @@ def eval_set(_set, env):
     env[_set.symbol] = evaluate(_set.expression, env)
 
 def eval_let(let, env):
-    raise Exception("not implemented yet")
+    scope = Environment(env)
+    for (symbol, value) in let.definitions:
+        scope[symbol] = value
+    return evaluate(let.expression, scope)
 
 def eval_constant(constant, env):
     return constant
@@ -83,6 +86,13 @@ def eval_if(_if, env):
     else:
         return evaluate(_if.alternate, env)
 
+
+
+def eval_begin(begin, environment):
+    for expr in begin.expressions[:-1]:
+        evaluate(expr, environment)
+    return evaluate(begin.expressions[-1], environment)
+
 eval_map = {
     If: eval_if,
     And: eval_and,
@@ -98,6 +108,8 @@ eval_map = {
     Call: eval_call,
     Procedure: eval_procedure,
     Lambda: eval_lambda,
+    Begin: eval_begin,
+    Let: eval_let
 }
 
 def evaluate(expression, environment):
