@@ -61,11 +61,11 @@ def eval_lambda(_lambda, env, name=None):
         for symbol, value in zip(formals, arguments):
             scope[symbol] = evaluate(value, env)
 
-        # 2. evaluate all the operands
-        operands = [evaluate(op, scope) for op in _lambda.body[1:]]
+        # 2. evaluate all the body
+        operands = [evaluate(op, scope) for op in _lambda.body]
 
-        # execute the operator
-        return operator(*operands)
+        # return the last operand
+        return operands[-1]
 
     return Procedure(implementation, num_args=len(_lambda.formals), name=name)
 
