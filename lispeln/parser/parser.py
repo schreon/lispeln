@@ -102,6 +102,9 @@ def _parse_and(expressions):
 def _parse_or(expressions):
     return Or(*[_parse(expr) for expr in expressions])
 
+def _parse_if(expressions):
+    return If(*[_parse(expr) for expr in expressions])
+
 syntax = {
     'begin': _parse_begin,
     'define': _parse_define,
@@ -112,7 +115,7 @@ syntax = {
     'or': _parse_or,
     # 'xor': _parse_xor,
     # 'not': _parse_not,
-    # 'if': _parse_if,
+    'if': _parse_if,
     # 'cons': _parse_cons,
     # 'car': _parse_car,
     # 'cdr': _parse_cdr,

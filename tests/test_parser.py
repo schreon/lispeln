@@ -112,5 +112,12 @@ class ParserTestCase(unittest.TestCase):
         self.assertEquals(Boolean(True), execute("(or (= 2 2) (< 2 1))", env))
         self.assertEquals(Boolean(False), execute("(or #f #f #f)", env))
 
+    def test_proc_lambda(self):
+        env = Environment(None)
+        define_builtins(env)
+
+        execute("(define x (lambda (a) (if (eq? a #t) + -)))", env)
+        self.assertEquals(Integer(7), execute("((x #t) 3 4)", env))
+
 if __name__ == '__main__':
     unittest.main()
