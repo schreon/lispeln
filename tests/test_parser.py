@@ -103,5 +103,14 @@ class ParserTestCase(unittest.TestCase):
         self.assertEquals(Boolean(True), execute("(or (= 2 2) (< 2 1))", env))
         self.assertEquals(Boolean(False), execute("(or #f #f #f)", env))
 
+    def _case(self):
+        # TODO
+        env = Environment(None)
+        define_builtins(env)
+
+        self.assertEquals(Boolean(True), execute("(* 2 3)", env))
+        self.assertEquals(Boolean(True), execute("(or (= 2 2) (< 2 1))", env))
+        self.assertEquals(Boolean(False), execute("(or #f #f #f)", env))
+
 if __name__ == '__main__':
     unittest.main()
