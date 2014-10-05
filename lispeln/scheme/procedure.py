@@ -1,5 +1,3 @@
-import logging
-from lispeln.scheme.environment import Environment
 from lispeln.scheme.expression import Expression, Syntax
 
 __author__ = 'schreon'

@@ -1,14 +1,13 @@
 import unittest
-from lispeln.evaluator import evaluate, Promise
-from lispeln.printer.derived import print_expression
-from lispeln.scheme.assignment import Define
-from lispeln.scheme.builtins import define_builtins
-from lispeln.scheme.constants import Integer, Float
-from lispeln.scheme.derived import Cons
-
 import logging
-from lispeln.scheme.environment import Environment, Symbol
-from lispeln.scheme.procedure import Lambda, Call, Procedure
+
+from lispeln.printer.derived import print_expression
+from lispeln.evaluator.builtins import define_builtins
+from lispeln.scheme.constants import Integer
+from lispeln.evaluator.environment import Environment
+from lispeln.scheme.procedure import Lambda, Call
+from lispeln.scheme.symbol import Symbol
+
 
 logging.basicConfig(level=logging.INFO)
 

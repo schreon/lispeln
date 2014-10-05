@@ -1,15 +1,20 @@
 import unittest
+
 from lispeln.evaluator.recursive import evaluate
 from lispeln.scheme.assignment import Define, Set
-from lispeln.scheme.builtins import _plus, define_builtins
+from lispeln.evaluator.builtins import _plus, define_builtins
 from lispeln.scheme.derived import Let, Begin
-from lispeln.scheme.environment import Symbol, Environment
+from lispeln.evaluator.environment import Environment
 from lispeln.scheme.logic import If, And
-
-from lispeln.scheme.constants import Integer, Boolean, Float, String
+from lispeln.scheme.constants import Integer, Boolean, Float
 from lispeln.scheme.procedure import Procedure, Call, Lambda
+from lispeln.scheme.symbol import Symbol
 
-class ExpressionTestCase(unittest.TestCase):
+
+class EvaluatorTestCase(unittest.TestCase):
+    """
+    This test case tests the evaluator. It relies on the parser and scheme package being fully tested.
+    """
     def test_symbol(self):
         # should have same object identity
         self.assertIs(Symbol("a"), Symbol("a"))
@@ -159,5 +164,13 @@ class ExpressionTestCase(unittest.TestCase):
         )
 
         self.assertEquals(evaluate(begin, env), Integer(0))
+
+
+    def test_builtints(self):
+        pass
+
+    def test_environment(self):
+        pass
+
 if __name__ == '__main__':
     unittest.main()

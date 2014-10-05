@@ -1,10 +1,12 @@
 import logging
+
 from lispeln.scheme.assignment import Define, Set
 from lispeln.scheme.constants import Integer, Float, Boolean, Nil
 from lispeln.scheme.derived import Let, Cons, Begin
-from lispeln.scheme.environment import Symbol, Environment
+from lispeln.evaluator.environment import Environment
 from lispeln.scheme.logic import And, If, Or
 from lispeln.scheme.procedure import Call, Procedure, Lambda
+from lispeln.scheme.symbol import Symbol
 
 
 def eval_define(define, env):

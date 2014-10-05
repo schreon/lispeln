@@ -1,9 +1,9 @@
 from lispeln.scheme.constants import Nil, Integer, Float, Boolean, String
 from lispeln.scheme.derived import Cons
-from lispeln.scheme.environment import Symbol
 
 import logging
 from lispeln.scheme.procedure import Procedure
+from lispeln.scheme.symbol import Symbol
 
 
 def ravel(cons):

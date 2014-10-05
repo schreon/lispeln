@@ -1,11 +1,12 @@
 import unittest
-from lispeln.scheme.assignment import Define, Set
-from lispeln.scheme.builtins import _plus
-from lispeln.scheme.environment import Symbol, Environment
-from lispeln.scheme.logic import If, And
 
+from lispeln.scheme.assignment import Define, Set
+from lispeln.evaluator.builtins import _plus
+from lispeln.evaluator.environment import Environment
+from lispeln.scheme.logic import If, And
 from lispeln.scheme.constants import Integer, Boolean, Float
 from lispeln.scheme.procedure import Procedure, Call, Lambda
+from lispeln.scheme.symbol import Symbol
 
 
 class ExpressionTestCase(unittest.TestCase):

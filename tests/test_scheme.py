@@ -1,11 +1,16 @@
 from lispeln.scheme.constants import Integer, Float, String, Boolean
 
-__author__ = 'schreon'
 
 import unittest
 
 
 class SchemeTestCase(unittest.TestCase):
+    """
+    This test case tests the scheme AST objects itself. It is isolated from all other packages.
+    """
+
+    def test_assignment(self):
+        pass
 
     def test_constants(self):
         Integer(42)
@@ -22,5 +27,18 @@ class SchemeTestCase(unittest.TestCase):
         self.assertRaises(Exception, Boolean, 42.5)
         self.assertRaises(Exception, Boolean, "True")
         self.assertRaises(Exception, Boolean, "False")
+
+    def test_derived(self):
+        pass
+
+    def test_expression(self):
+        pass
+
+    def test_logic(self):
+        pass
+
+    def test_procedure(self):
+        pass
+
 if __name__ == '__main__':
     unittest.main()

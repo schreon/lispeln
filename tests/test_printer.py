@@ -1,12 +1,12 @@
 from lispeln.evaluator.recursive import evaluate
 from lispeln.printer.derived import print_expression
-from lispeln.scheme.builtins import _plus
+from lispeln.evaluator.builtins import _plus
 from lispeln.scheme.constants import Nil, Integer, Boolean, Float, String
 from lispeln.scheme.derived import Cons
-from lispeln.scheme.environment import Symbol, Environment
+from lispeln.evaluator.environment import Environment
 from lispeln.scheme.procedure import Procedure, Lambda
+from lispeln.scheme.symbol import Symbol
 
-__author__ = 'schreon'
 
 import unittest
 import logging
@@ -14,6 +14,9 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 class PrinterTestCase(unittest.TestCase):
+    """
+    This is the printer test case. It relies on the following packages to be fully tested: scheme, parser
+    """
     def test_numbers(self):
         i = Integer(1)
         f = Float(1.2)

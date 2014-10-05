@@ -7,6 +7,12 @@ class Cons(Syntax):
         self.first = first
         self.rest = rest
 
+    def __eq__(self, other):
+        if not isinstance(other, Cons):
+            return False
+        else:
+            return self.first == other.first and self.rest == other.rest
+
 class Let(Syntax):
     def __init__(self, bindings, expression):
         super(Let, self).__init__()

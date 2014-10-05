@@ -1,12 +1,15 @@
 import logging
+
 from lispeln.evaluator.recursive import evaluate
 from lispeln.parser.tokenizer import tokenize
 from lispeln.parser.parser import parse
-from lispeln.scheme.builtins import define_builtins
+from lispeln.evaluator.builtins import define_builtins
 from lispeln.scheme.constants import Integer, Boolean
-from lispeln.scheme.derived import Begin
-from lispeln.scheme.environment import Environment, Symbol
+from lispeln.scheme.derived import Begin, Cons
+from lispeln.evaluator.environment import Environment
 from lispeln.scheme.procedure import Call
+from lispeln.scheme.symbol import Symbol
+
 
 __author__ = 'schreon'
 
@@ -18,11 +21,13 @@ def execute(code, env):
     return evaluate(parse(tokenize(code)), env)
 
 class ParserTestCase(unittest.TestCase):
-
+    """
+    This test case tests the parser. It relies on the scanner package to be fully tested.
+    """
     def test_tokenizer(self):
         self.assertEquals(tokenize("(+ 1 2)"), ['+', '1', '2'])
         self.assertEquals(tokenize("(+ (1 2))"), ['+', ['1', '2']])
-        self.assertEquals(tokenize("1"), ['1'])
+        self.assertEquals(tokenize("1"), '1')
 
     def test_parser(self):
         parsed = parse(tokenize("(+ 1 2)"))
@@ -40,8 +45,9 @@ class ParserTestCase(unittest.TestCase):
 
     def test_begin(self):
         env = Environment(None)
+        define_builtins(env)
 
-        actual = evaluate(parse(tokenize("(begin (define x 1) (+ x 2))")), env)
+        actual = execute("(begin (define x 1) (+ x 2))", env)
         expected = Integer(3)
         self.assertEquals(expected, actual)
 
@@ -118,6 +124,12 @@ class ParserTestCase(unittest.TestCase):
 
         execute("(define x (lambda (a) (if (eq? a #t) + -)))", env)
         self.assertEquals(Integer(7), execute("((x #t) 3 4)", env))
+
+    def test_cons(self):
+        env = Environment(None)
+        define_builtins(env)
+
+        self.assertEquals(Cons(Cons(Integer(1), Integer(2)), Integer(3)), execute("(cons (cons 1 2) 3)", env))
 
 if __name__ == '__main__':
     unittest.main()

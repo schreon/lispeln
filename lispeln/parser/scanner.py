@@ -2,6 +2,14 @@ WHITESPACE = frozenset([' ', '\n', '\t'])
 TOKEN_END = frozenset([' ', '\n', '\t', ')'])
 
 
+class UnexpectedCharacterException(Exception):
+    pass
+
+
+class UnexpectedEndOfStringException(Exception):
+    pass
+
+
 class Scanner(object):
     def __init__(self, string):
         self.string = string
@@ -109,11 +117,5 @@ class Scanner(object):
                 self.cursor += len(string)
                 return True
 
-        raise UnexpectedInputException(
+        raise UnexpectedCharacterException(
             "Expected one of: " + str(strings) + ", instead found: " + self.string[self.cursor:])
-
-class UnexpectedInputException(Exception):
-    pass
-
-class UnexpectedEndOfStringException(Exception):
-    pass

@@ -2,10 +2,10 @@ import logging
 from lispeln.scheme.assignment import Define, Set
 from lispeln.scheme.constants import Integer, Float, Boolean, Nil, Constant
 from lispeln.scheme.derived import Let, Cons, Begin
-from lispeln.scheme.environment import Symbol
 from lispeln.scheme.expression import Expression
 from lispeln.scheme.logic import If, And, Or
 from lispeln.scheme.procedure import Lambda, Call
+from lispeln.scheme.symbol import Symbol
 import re
 
 
@@ -70,7 +70,7 @@ def _parse_define(rest):
 
 def _parse_begin(rest):
     logging.info("Parse Begin.")
-    return Begin(_parse(item) for item in rest)
+    return Begin(*[_parse(item) for item in rest])
 
 
 def _parse_set(rest):
@@ -105,6 +105,11 @@ def _parse_or(expressions):
 def _parse_if(expressions):
     return If(*[_parse(expr) for expr in expressions])
 
+def _parse_cons(expressions):
+    if len(expressions) != 2:
+        raise Exception("Invalid number of arguments. Expected 2, but got %d" % len(expressions))
+    return Cons(_parse(expressions[0]), _parse(expressions[1]))
+
 syntax = {
     'begin': _parse_begin,
     'define': _parse_define,
@@ -116,7 +121,7 @@ syntax = {
     # 'xor': _parse_xor,
     # 'not': _parse_not,
     'if': _parse_if,
-    # 'cons': _parse_cons,
+    'cons': _parse_cons,
     # 'car': _parse_car,
     # 'cdr': _parse_cdr,
 }

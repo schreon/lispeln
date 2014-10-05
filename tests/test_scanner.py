@@ -1,9 +1,12 @@
 import unittest
 
-from lispeln.parser.scanner import Scanner, UnexpectedInputException, UnexpectedEndOfStringException
+from lispeln.parser.scanner import Scanner, UnexpectedCharacterException, UnexpectedEndOfStringException
 
 
 class ScannerTestCase(unittest.TestCase):
+    """
+    This test case tests the scanner. It is isolated form all other packages.
+    """
     def test_initialize(self):
         """
         it does initialize correctly
@@ -106,7 +109,7 @@ class ScannerTestCase(unittest.TestCase):
         string = "true false nil"
         scanner = Scanner(string)
 
-        self.assertRaises(UnexpectedInputException, scanner.consume, "wurst")
+        self.assertRaises(UnexpectedCharacterException, scanner.consume, "wurst")
         self.assertTrue(scanner.matches("true"))
         scanner.consume("true")
         self.assertFalse(scanner.matches("false"))
