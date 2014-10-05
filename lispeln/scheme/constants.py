@@ -28,7 +28,7 @@ class Constant(Expression):
 
 class Nil(Constant):
     def __init__(self):
-        super(Nil, self).__init__(None)
+        pass
 
 class Number(Constant):
     def __gt__(self, other):

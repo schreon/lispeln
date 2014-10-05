@@ -1,6 +1,6 @@
-__author__ = 'schreon'
 WHITESPACE = frozenset([' ', '\n', '\t'])
 TOKEN_END = frozenset([' ', '\n', '\t', ')'])
+
 
 class Scanner(object):
     def __init__(self, string):
@@ -47,7 +47,7 @@ class Scanner(object):
         """
         for string in strings:
             l = len(string)
-            if self.string[self.cursor:self.cursor+l] == string:
+            if self.string[self.cursor:self.cursor + l] == string:
                 return True
         return False
 
@@ -75,7 +75,6 @@ class Scanner(object):
     def until(self, *strings):
         """
         Seeks until one of the given strings has been found.
-        If none matches in the whole string, an EndOfStringException is raised.
         :return: the string until the first match
         """
         start = self.cursor
@@ -84,11 +83,21 @@ class Scanner(object):
                 if self.matches(string):
                     return self.string[start:self.cursor]
             self.next()
-        return self.string[start:self.cursor]
-        #raise EndOfStringException("Could not find any of " + str(strings))
+        raise UnexpectedEndOfStringException("Unexpected end of string. Did not find any of %s" % str(strings))
+
 
     def token(self):
-        return self.until(*TOKEN_END)
+        """
+        Reads until the next valid token end (can also be the end of string).
+        :return: the next token
+        """
+        start = self.cursor
+        while not self.end():
+            for string in TOKEN_END:
+                if self.matches(string):
+                    return self.string[start:self.cursor]
+            self.next()
+        return self.string[start:self.cursor]
 
     def consume(self, *strings):
         """
@@ -100,11 +109,11 @@ class Scanner(object):
                 self.cursor += len(string)
                 return True
 
-        raise UnexpectedInputException("Expected one of: "+str(strings)+", instead found: "+self.string[self.cursor:])
-
-class EndOfStringException(Exception):
-    pass
-
+        raise UnexpectedInputException(
+            "Expected one of: " + str(strings) + ", instead found: " + self.string[self.cursor:])
 
 class UnexpectedInputException(Exception):
+    pass
+
+class UnexpectedEndOfStringException(Exception):
     pass

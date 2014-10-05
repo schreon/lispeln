@@ -42,7 +42,7 @@ class PrinterTestCase(unittest.TestCase):
         s = print_expression(evaluate(expr, env))
         self.assertEquals("(123 . 42)", s)
 
-        env['b'] = Integer(42.42)
+        env['b'] = Float(42.42)
 
         s = print_expression(evaluate(Cons(Symbol('a'), Symbol('b')), env))
         self.assertEquals("(123 . 42.42)", s)
@@ -69,15 +69,15 @@ class PrinterTestCase(unittest.TestCase):
 
         logging.info("Testing if procedure name is passed ...")
         env['g'] = Lambda([Symbol('c')], [Symbol('f'), Symbol('a'), Symbol('b'), Symbol('c')])
-        s = print_expression(Symbol('g').eval(env))
+        s = print_expression(evaluate(Symbol('g'), env))
         self.assertEquals('#<procedure:g>', s)
 
         logging.info("Testing if procedure name sticks ...")
-        env['h'] = Symbol('g').eval(env)
+        env['h'] = evaluate(Symbol('g'), env)
         env['g'] = Integer(5)
-        s1 = print_expression(env['g'].eval(env))
+        s1 = print_expression(evaluate(Symbol('g'), env))
         self.assertEquals('5', s1)
-        s2 = print_expression(env['h'].eval(env))
+        s2 = print_expression(evaluate(Symbol('h'), env))
         self.assertEquals('#<procedure:g>', s2)
 
 

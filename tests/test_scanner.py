@@ -1,6 +1,6 @@
 import unittest
 
-from lispeln.parser.scanner import Scanner, EndOfStringException, UnexpectedInputException
+from lispeln.parser.scanner import Scanner, UnexpectedInputException, UnexpectedEndOfStringException
 
 
 class ScannerTestCase(unittest.TestCase):
@@ -97,8 +97,7 @@ class ScannerTestCase(unittest.TestCase):
         self.assertTrue(scanner.matches("ist"))
         self.assertEquals(capture, "dies ")
 
-        # should throw an EOS exception
-        self.assertRaises(EndOfStringException, scanner.until, "gibt es nicht")
+        self.assertRaises(UnexpectedEndOfStringException, scanner.until, "gibt es nicht")
 
     def test_consume(self):
         """
@@ -117,6 +116,20 @@ class ScannerTestCase(unittest.TestCase):
         scanner.skip_whitespace()
         self.assertTrue(scanner.matches("nil"))
         scanner.consume("nil")
+
+    def test_token(self):
+        """
+        it consumes a token
+        """
+        string = "a b c"
+        scanner = Scanner(string)
+        tok = scanner.token()
+        self.assertEquals(tok, 'a')
+
+        string = "tok"
+        scanner = Scanner(string)
+        tok = scanner.token()
+        self.assertEquals(tok, 'tok')
 
 if __name__ == '__main__':
     unittest.main()
