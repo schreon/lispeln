@@ -1,6 +1,7 @@
 WHITESPACE = frozenset([' ', '\n', '\t'])
 TOKEN_END = frozenset([' ', '\n', '\t', ')'])
 
+import logging
 
 class UnexpectedCharacterException(Exception):
     pass
@@ -99,13 +100,22 @@ class Scanner(object):
         Reads until the next valid token end (can also be the end of string).
         :return: the next token
         """
+        # string?
+        if self.peek(0) == '"':
+            token_end = ['"']
+            pre = post = '"'
+            self.next()
+        else:
+            token_end = TOKEN_END
+            pre = post = ''
+
         start = self.cursor
         while not self.end():
-            for string in TOKEN_END:
+            for string in token_end:
                 if self.matches(string):
-                    return self.string[start:self.cursor]
+                    return pre + self.string[start:self.cursor] + post
             self.next()
-        return self.string[start:self.cursor]
+        return pre + self.string[start:self.cursor] + post
 
     def consume(self, *strings):
         """

@@ -1,8 +1,8 @@
 import logging
 from lispeln.scheme.assignment import Define, Set
 from lispeln.scheme.constants import Integer, Float, Boolean, Nil, Constant
-from lispeln.scheme.derived import Let, Cons, Begin, Car, Cdr
-from lispeln.scheme.expression import Expression
+from lispeln.scheme.derived import Let, Pair, Begin, Car, Cdr
+from lispeln.scheme.expression import Expression, Quote
 from lispeln.scheme.logic import If, And, Or
 from lispeln.scheme.procedure import Lambda, Call
 from lispeln.scheme.symbol import Symbol
@@ -105,21 +105,9 @@ def _parse_or(expressions):
 def _parse_if(expressions):
     return If(*[_parse(expr) for expr in expressions])
 
-def _parse_cons(expressions):
-    if len(expressions) != 2:
-        raise Exception("Invalid number of expressions. Expected: 2, but got: %d" % len(expressions))
-    return Cons(*[_parse(expr) for expr in expressions])
-
-def _parse_car(expressions):
-    if len(expressions) != 1:
-        raise Exception("Invalid number of expressions. Expected: 1, but got: %d" % len(expressions))
-
-    return Car(*[_parse(expr) for expr in expressions])
-
-def _parse_cdr(expressions):
-    if len(expressions) != 1:
-        raise Exception("Invalid number of expressions. Expected: 1, but got: %d" % len(expressions))
-    return Cdr(*[_parse(expr) for expr in expressions])
+def _parse_quote(expressions):
+    logging.info("parse quote")
+    return Quote(*[_parse(expr) for expr in expressions])
 
 syntax = {
     'begin': _parse_begin,
@@ -129,12 +117,8 @@ syntax = {
     'let': _parse_let,
     'and': _parse_and,
     'or': _parse_or,
-    # 'xor': _parse_xor,
-    # 'not': _parse_not,
     'if': _parse_if,
-    'cons': _parse_cons,
-    'car': _parse_car,
-    'cdr': _parse_cdr,
+    "'": _parse_quote,
 }
 
 def _parse_token(tok):

@@ -2,7 +2,7 @@ import logging
 
 from lispeln.scheme.assignment import Define, Set
 from lispeln.scheme.constants import Integer, Float, Boolean
-from lispeln.scheme.derived import Let, Cons
+from lispeln.scheme.derived import Let, Pair
 from lispeln.evaluator.environment import Environment
 from lispeln.scheme.procedure import Lambda, Call, Procedure
 from lispeln.scheme.symbol import Symbol
@@ -62,7 +62,7 @@ def eval_and(self, env):
 
 def eval_cons(self, environment, *args, **kwargs):
     logging.info("eval_cons")
-    return Cons(evaluate(self.first, environment, *args, **kwargs), evaluate(self.rest, environment, *args, **kwargs))
+    return Pair(evaluate(self.first, environment, *args, **kwargs), evaluate(self.rest, environment, *args, **kwargs))
 
 def eval_lambda(self, environment, name=None):
     logging.info("EVAL: lambda")
@@ -153,7 +153,7 @@ eval_map = {
     Integer: eval_constant,
     Float: eval_constant,
     Boolean: eval_constant,
-    Cons: eval_cons,
+    Pair: eval_cons,
     Symbol: eval_symbol,
     Call: eval_call,
     Procedure: eval_procedure,

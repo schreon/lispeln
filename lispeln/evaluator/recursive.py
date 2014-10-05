@@ -2,8 +2,9 @@ import logging
 
 from lispeln.scheme.assignment import Define, Set
 from lispeln.scheme.constants import Integer, Float, Boolean, Nil
-from lispeln.scheme.derived import Let, Cons, Begin, Car, Cdr
+from lispeln.scheme.derived import Let, Pair, Begin, Car, Cdr
 from lispeln.evaluator.environment import Environment
+from lispeln.scheme.expression import Quote
 from lispeln.scheme.logic import And, If, Or
 from lispeln.scheme.procedure import Call, Procedure, Lambda
 from lispeln.scheme.symbol import Symbol
@@ -27,7 +28,7 @@ def eval_constant(constant, env):
     return constant
 
 def eval_cons(cons, env):
-    return Cons(evaluate(cons.first, env), evaluate(cons.rest, env))
+    return Pair(evaluate(cons.first, env), evaluate(cons.rest, env))
 
 def eval_symbol(symbol, env):
     if symbol not in env:
@@ -111,6 +112,9 @@ def eval_car(expression, environment):
 def eval_cdr(expression, environment):
     return evaluate(expression.pair, environment).rest
 
+def eval_quote(quote, environment):
+    return quote.expression
+
 eval_map = {
     If: eval_if,
     And: eval_and,
@@ -122,14 +126,15 @@ eval_map = {
     Integer: eval_constant,
     Float: eval_constant,
     Boolean: eval_constant,
-    Cons: eval_cons,
+    Pair: eval_cons,
     Symbol: eval_symbol,
     Call: eval_call,
     Procedure: eval_procedure,
     Lambda: eval_lambda,
     Begin: eval_begin,
     Car: eval_car,
-    Cdr: eval_cdr
+    Cdr: eval_cdr,
+    Quote: eval_quote
 }
 
 def evaluate(expression, environment):

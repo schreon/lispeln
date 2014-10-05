@@ -32,6 +32,5 @@ class Syntax(object):
     pass
 
 class Quote(Expression):
-    def __init__(self, expression, *args, **kwargs):
-        super(Quote, self).__init__(*args, **kwargs)
+    def __init__(self, expression):
         self.expression = expression

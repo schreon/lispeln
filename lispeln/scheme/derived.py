@@ -1,9 +1,9 @@
 from lispeln.scheme.expression import Syntax
 
 
-class Cons(Syntax):
+class Pair(Syntax):
     def __init__(self, first, rest, *args, **kwargs):
-        super(Cons, self).__init__(*args, **kwargs)
+        super(Pair, self).__init__(*args, **kwargs)
         self.first = first
         self.rest = rest
 
@@ -11,7 +11,7 @@ class Cons(Syntax):
         """
         Attention, this is the equality on AST level - not evaluated!
         """
-        if not isinstance(other, Cons):
+        if not isinstance(other, Pair):
             return False
         else:
             return self.first == other.first and self.rest == other.rest

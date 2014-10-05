@@ -5,7 +5,7 @@ from lispeln.parser.tokenizer import tokenize
 from lispeln.parser.parser import parse
 from lispeln.evaluator.builtins import define_builtins
 from lispeln.scheme.constants import Integer, Boolean
-from lispeln.scheme.derived import Begin, Cons
+from lispeln.scheme.derived import Begin, Pair
 from lispeln.evaluator.environment import Environment
 from lispeln.scheme.procedure import Call
 from lispeln.scheme.symbol import Symbol
@@ -129,11 +129,21 @@ class ParserTestCase(unittest.TestCase):
         env = Environment(None)
         define_builtins(env)
 
-        self.assertEquals(Cons(Cons(Integer(1), Integer(2)), Integer(3)), execute("(cons (cons 1 2) 3)", env))
-        self.assertEquals(Cons(Integer(3), Cons(Integer(1), Integer(2))), execute("(cons 3 (cons 1 2))", env))
+        self.assertEquals(Pair(Pair(Integer(1), Integer(2)), Integer(3)), execute("(cons (cons 1 2) 3)", env))
+        self.assertEquals(Pair(Integer(3), Pair(Integer(1), Integer(2))), execute("(cons 3 (cons 1 2))", env))
 
         self.assertEquals(Integer(1), execute("(car (cons 1 2))", env))
         self.assertEquals(Integer(2), execute("(cdr (cons 1 2))", env))
+
+    def test_quote(self):
+
+        env = Environment(None)
+        define_builtins(env)
+
+        tokens = tokenize("' a ;123 '(test")
+        self.assertEquals(["'", "a"], tokens)
+        expression = parse(tokens)
+        self.assertEquals(repr(Symbol('a')), repr(evaluate(expression, env)))
 
 if __name__ == '__main__':
     unittest.main()

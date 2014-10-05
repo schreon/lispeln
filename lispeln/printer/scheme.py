@@ -1,5 +1,5 @@
 from lispeln.scheme.constants import Nil, Integer, Float, Boolean, String
-from lispeln.scheme.derived import Cons
+from lispeln.scheme.derived import Pair
 
 import logging
 from lispeln.scheme.procedure import Procedure
@@ -11,12 +11,12 @@ def ravel(cons):
     :param cons: Cons to convert to python list
     :return: a flat python list representing a (nested) cons
     """
-    if not isinstance(cons.rest, Cons):
+    if not isinstance(cons.rest, Pair):
         return [cons.first, cons.rest]
     else:
         last = cons.rest
         l = [cons.first]
-        while isinstance(last, Cons):
+        while isinstance(last, Pair):
             l.append(last.first)
             last = last.rest
         l.append(last)
@@ -28,7 +28,7 @@ def print_symbol(symbol):
 
 def print_cons(cons):
     logging.info("print cons")
-    if isinstance(cons.rest, Cons):
+    if isinstance(cons.rest, Pair):
         l = ravel(cons)
         res = "(" + " ".join([print_expression(el) for el in l[:-1]])
         if isinstance(l[-1], Nil):
@@ -74,15 +74,13 @@ print_map = {
     Float: print_number,
     String: print_string,
     Symbol: print_symbol,
-    Cons: print_cons,
+    Pair: print_cons,
     Procedure: print_proc
 }
+
 def print_expression(expression):
     print_func = print_map.get(expression.__class__, None)
     if print_func is None:
         raise Exception("No print function defined for %s" % str(expression.__class__))
     else:
         return print_func(expression)
-
-# def __repr__(self):
-#     return "<%s: (%s.%s)>" % (self.__class__.__name__, self.first, self.rest)

@@ -3,7 +3,7 @@ from lispeln.scheme.constants import Integer, Float, String, Boolean
 
 
 import unittest
-from lispeln.scheme.derived import Car, Cons
+from lispeln.scheme.derived import Car, Pair
 
 logging.basicConfig(level=logging.INFO)
 class SchemeTestCase(unittest.TestCase):
@@ -31,7 +31,7 @@ class SchemeTestCase(unittest.TestCase):
         self.assertRaises(Exception, Boolean, "False")
 
     def test_derived(self):
-        a = Car(Cons(Integer(1), Integer(2)))
+        a = Car(Pair(Integer(1), Integer(2)))
 
         # TODO
 

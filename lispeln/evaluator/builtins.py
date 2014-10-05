@@ -1,4 +1,5 @@
 from lispeln.scheme.constants import Float, Integer, Boolean
+from lispeln.scheme.derived import Pair
 from lispeln.scheme.procedure import Procedure
 
 
@@ -85,6 +86,15 @@ def _greater_equal(arg1, arg2):
     else:
         return Boolean(False)
 
+def _cons(arg1, arg2):
+    return Pair(arg1, arg2)
+
+def _car(pair):
+    return pair.first
+
+def _cdr(pair):
+    return pair.rest
+
 def define_builtins(env):
     env['+'] = Procedure(_plus, name='+')
     env['-'] = Procedure(_minus, name='-')
@@ -96,3 +106,6 @@ def define_builtins(env):
     env['<='] = Procedure(_less_equal, num_args=2, name='<=')
     env['>'] = Procedure(_greater_than, num_args=2, name='>')
     env['>='] = Procedure(_greater_equal, num_args=2, name='>=')
+    env['cons'] = Procedure(_cons, num_args=2, name='cons')
+    env['car'] = Procedure(_car, num_args=1, name='car')
+    env['cdr'] = Procedure(_cdr, num_args=1, name='cdr')

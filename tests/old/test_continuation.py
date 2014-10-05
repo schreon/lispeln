@@ -1,7 +1,7 @@
 import unittest
 import logging
 
-from lispeln.printer.derived import print_expression
+from lispeln.printer.scheme import print_expression
 from lispeln.evaluator.builtins import define_builtins
 from lispeln.scheme.constants import Integer
 from lispeln.evaluator.environment import Environment

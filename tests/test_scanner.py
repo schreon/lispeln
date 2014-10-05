@@ -2,7 +2,10 @@ import unittest
 
 from lispeln.parser.scanner import Scanner, UnexpectedCharacterException, UnexpectedEndOfStringException
 
+import logging
+from lispeln.parser.tokenizer import tokenize
 
+logging.basicConfig(level=logging.INFO)
 class ScannerTestCase(unittest.TestCase):
     """
     This test case tests the scanner. It is isolated form all other packages.
@@ -132,7 +135,29 @@ class ScannerTestCase(unittest.TestCase):
         string = "tok"
         scanner = Scanner(string)
         tok = scanner.token()
-        self.assertEquals(tok, 'tok')
+        self.assertEquals('tok', tok)
+
+    def test_string(self):
+        """
+        it consumes a string
+        """
+
+        string = '  \n " \n ; comment \n test\n "   '
+        scanner = Scanner(string)
+        scanner.skip_whitespace()
+        tok = scanner.token()
+        self.assertEquals('" \n ; comment \n test\n "', tok)
+
+    def test_quote(self):
+        """
+        it recognizes quotes as separate tokens
+        """
+
+        tokens = tokenize("'a ;123 '(test")
+
+        logging.info(tokens)
+
+        self.assertEquals(["'", "a"], tokens)
 
 if __name__ == '__main__':
     unittest.main()

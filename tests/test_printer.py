@@ -1,9 +1,9 @@
 from lispeln.evaluator.recursive import evaluate
-from lispeln.printer.derived import print_expression
-from lispeln.evaluator.builtins import _plus
+from lispeln.parser.parser import parse
+from lispeln.parser.tokenizer import tokenize
+from lispeln.printer.scheme import print_expression
 from lispeln.scheme.constants import Nil, Integer, Boolean, Float, String
-from lispeln.scheme.derived import Cons
-from lispeln.evaluator.environment import Environment
+from lispeln.scheme.derived import Pair
 from lispeln.scheme.procedure import Procedure, Lambda
 from lispeln.scheme.symbol import Symbol
 
@@ -13,51 +13,36 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
+
+def echo(code):
+    return print_expression(parse(tokenize(code)))
+
+
 class PrinterTestCase(unittest.TestCase):
     """
-    This is the printer test case. It relies on the following packages to be fully tested: scheme, parser
+    This is the printer test case. It relies on the following packages to be fully tested: parser, scheme
     """
     def test_numbers(self):
-        i = Integer(1)
-        f = Float(1.2)
-
-        self.assertEquals("1", print_expression(i))
-        self.assertEquals("1.2", print_expression(f))
+        self.assertEquals("1", echo("1"))
+        self.assertEquals("1.2", echo("1.2"))
 
     def test_string(self):
-        s = String("Hallo Test String")
-        self.assertEquals('"Hallo Test String"', print_expression(s))
+        self.assertEquals('"Hallo Test String"', echo('"Hallo Test String"'))
 
     def test_boolean(self):
-        t = Boolean(True)
-        f = Boolean(False)
-
-        self.assertEquals("#t", print_expression(t))
-        self.assertEquals("#f", print_expression(f))
+        self.assertEquals('#t', echo('#t'))
+        self.assertEquals('#f', echo('#f'))
+        self.assertEquals('#t', echo('true'))
+        self.assertEquals('#f', echo('false'))
 
     def test_cons(self):
+        inp = "( cons 1 (  cons 2 (cons 3 '() ) )  )"
+        expected = "(1 2 3)"
+        self.assertEquals(expected, echo(inp))
 
-        env = Environment(None)
-        env['a'] = Integer(123)
-        env['b'] = Integer(42)
-
-        expr = Cons(Symbol('a'), Symbol('b'))
-        s = print_expression(evaluate(expr, env))
-        self.assertEquals("(123 . 42)", s)
-
-        env['b'] = Float(42.42)
-
-        s = print_expression(evaluate(Cons(Symbol('a'), Symbol('b')), env))
-        self.assertEquals("(123 . 42.42)", s)
-
-        s = print_expression(evaluate(Cons(Nil(), Nil()), env))
-        self.assertEquals("(())", s)
-
-        s = print_expression(evaluate(Cons(Nil(), Cons(Nil(), Nil())), env))
-        self.assertEquals("(() ())", s)
-
-        s = print_expression(evaluate(Cons(Cons(Nil(), Nil()), Nil()), env))
-        self.assertEquals("((()))", s)
+        inp = " ( cons 1 ( cons 2 (  cons 3 4)))"
+        expected = "(1 2 3 . 4)"
+        self.assertEquals(expected, echo(inp))
 
     def test_proc(self):
         env = Environment(None)
