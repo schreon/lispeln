@@ -5,7 +5,7 @@ from lispeln.scheme.derived import Pair, Let
 import logging
 from lispeln.scheme.expression import Quote
 from lispeln.scheme.logic import If, Or, And
-from lispeln.scheme.procedure import Procedure
+from lispeln.scheme.procedure import Procedure, Call
 from lispeln.scheme.symbol import Symbol
 
 
@@ -81,7 +81,7 @@ print_map = {
     Symbol: print_symbol,
     Pair: print_pair,
     Procedure: print_proc,
-    Quote: print_quote
+    Quote: print_quote,
 }
 
 def print_expression(expression):

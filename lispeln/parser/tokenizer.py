@@ -36,10 +36,12 @@ def read_list(scanner):
 
     scanner.skip_whitespace()
     scanner.consume(')')
+    scanner.skip_whitespace()
     return _list
 
 def read_token(scanner):
     tok = scanner.token()
+    scanner.skip_whitespace()
     logging.info("read token %s" % tok)
     return tok
 
@@ -48,6 +50,7 @@ def read_quote(scanner):
     scanner.consume("'")
     res = ["'"]
 
+    scanner.skip_whitespace()
     res.append(read(scanner))
 
     return res

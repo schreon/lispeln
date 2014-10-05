@@ -25,9 +25,9 @@ class ParserTestCase(unittest.TestCase):
     This test case tests the parser. It relies on the scanner package to be fully tested.
     """
     def test_tokenizer(self):
-        self.assertEquals(tokenize("(+ 1 2)"), ['+', '1', '2'])
-        self.assertEquals(tokenize("(+ (1 2))"), ['+', ['1', '2']])
-        self.assertEquals(tokenize("1"), '1')
+        self.assertEquals(tokenize("( + 1 2 )"), ['+', '1', '2'])
+        self.assertEquals(tokenize("(+ ( 1 2 ) )"), ['+', ['1', '2']])
+        self.assertEquals(tokenize("1 "), '1')
 
     def test_parser(self):
         parsed = parse(tokenize("(+ 1 2)"))

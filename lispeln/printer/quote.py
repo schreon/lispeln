@@ -8,7 +8,7 @@ from lispeln.scheme.symbol import Symbol
 
 __author__ = 'schreon'
 
-def quote_nil(expression):
+def quote_nil(_):
     return "()"
 
 def quote_boolean(b):
@@ -35,6 +35,36 @@ def quote_quote(q):
 
 def quote_let(l):
     # TODO
+    pass
+
+def quote_define():
+    pass
+
+def quote_set():
+    pass
+
+def quote_pair():
+    pass
+
+def quote_begin():
+    pass
+
+def quote_car():
+    pass
+
+def quote_cdr():
+    pass
+
+def quote_if():
+    pass
+
+def quote_and():
+    pass
+
+def quote_or():
+    pass
+
+def quote_lambda():
     pass
 
 quote_map = {

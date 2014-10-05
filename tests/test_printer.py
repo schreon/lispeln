@@ -35,70 +35,26 @@ class PrinterTestCase(unittest.TestCase):
         self.assertEquals('#t', echo('true'))
         self.assertEquals('#f', echo('false'))
 
-    def test_cons(self):
-        inp = "( cons 1 (  cons 2 (cons 3 '() ) )  )"
+    def test_pair(self):
+        expr = Pair(Integer(1), Pair(Integer(2), Pair(Integer(3), Nil())))
         expected = "(1 2 3)"
-        self.assertEquals(expected, echo(inp))
+        self.assertEquals(expected, print_expression(expr))
 
-        inp = " ( cons 1 ( cons 2 (  cons 3 4)))"
+        expr = Pair(Integer(1), Pair(Integer(2), Pair(Integer(3), Integer(4))))
         expected = "(1 2 3 . 4)"
-        self.assertEquals(expected, echo(inp))
+        self.assertEquals(expected, print_expression(expr))
 
     def test_quote(self):
-        inp = "' ( cons 1 (  cons 2 (cons 3 '() ) )  )"
-        tokens = tokenize(inp)
-        logging.info("<<<< tokens")
-        logging.info(tokens)
-        logging.info("<<<< tokens")
-        expr = parse(tokens)
-        actual = print_expression(expr)
-
+        actual = echo("' ( cons 1 (  cons 2 (cons 3 '() ) )  )")
         expected = "(cons 1 (cons 2 (cons 3 '())))"
 
         logging.info(repr(actual))
         self.assertEquals(expected, actual)
 
     def test_nil(self):
-        inp = "'(cons 1 '())"
-        tokens = tokenize(inp)
-        logging.info("<<<< tokens")
-        logging.info(tokens)
-        logging.info("<<<< tokens")
-        expr = parse(tokens)
-
-        logging.info(repr(expr))
-
-        actual = print_expression(expr)
-
+        actual = echo("'(cons 1 '())")
         expected = "(cons 1 '())"
-
-        logging.info(repr(actual))
         self.assertEquals(expected, actual)
-
-    def test_proc(self):
-        env = Environment(None)
-        env['a'] = Integer(1)
-        env['b'] = Integer(5)
-        env['c'] = Integer(-100)
-        env['f'] = Procedure(_plus)
-
-        l = Lambda([Symbol('c')], [Symbol('f'), Symbol('a'), Symbol('b'), Symbol('c')])
-        s = print_expression(evaluate(l, env))
-        self.assertEquals('#<procedure>', s)
-
-        logging.info("Testing if procedure name is passed ...")
-        env['g'] = Lambda([Symbol('c')], [Symbol('f'), Symbol('a'), Symbol('b'), Symbol('c')])
-        s = print_expression(evaluate(Symbol('g'), env))
-        self.assertEquals('#<procedure:g>', s)
-
-        logging.info("Testing if procedure name sticks ...")
-        env['h'] = evaluate(Symbol('g'), env)
-        env['g'] = Integer(5)
-        s1 = print_expression(evaluate(Symbol('g'), env))
-        self.assertEquals('5', s1)
-        s2 = print_expression(evaluate(Symbol('h'), env))
-        self.assertEquals('#<procedure:g>', s2)
-
 
 if __name__ == '__main__':
     unittest.main()
