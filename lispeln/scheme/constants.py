@@ -30,6 +30,9 @@ class Nil(Constant):
     def __init__(self):
         pass
 
+    def __repr__(self):
+        return "<Nil>"
+
 class Number(Constant):
     def __gt__(self, other):
         return (self.value > other.value)

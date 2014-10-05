@@ -34,3 +34,6 @@ class Syntax(object):
 class Quote(Expression):
     def __init__(self, expression):
         self.expression = expression
+
+    def __repr__(self):
+        return "<Quote:%s>" % repr(self.expression)

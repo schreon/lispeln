@@ -1,7 +1,9 @@
+from lispeln.printer.quote import quote_expression
 from lispeln.scheme.constants import Nil, Integer, Float, Boolean, String
 from lispeln.scheme.derived import Pair
 
 import logging
+from lispeln.scheme.expression import Quote
 from lispeln.scheme.procedure import Procedure
 from lispeln.scheme.symbol import Symbol
 
@@ -67,6 +69,9 @@ def print_proc(proc):
     else:
         return '#<procedure>'
 
+def print_quote(q):
+    return "%s" % quote_expression(q.expression)
+
 print_map = {
     Nil: print_nil,
     Boolean: print_boolean,
@@ -75,7 +80,8 @@ print_map = {
     String: print_string,
     Symbol: print_symbol,
     Pair: print_cons,
-    Procedure: print_proc
+    Procedure: print_proc,
+    Quote: print_quote,
 }
 
 def print_expression(expression):

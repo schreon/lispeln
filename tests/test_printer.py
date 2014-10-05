@@ -44,6 +44,37 @@ class PrinterTestCase(unittest.TestCase):
         expected = "(1 2 3 . 4)"
         self.assertEquals(expected, echo(inp))
 
+    def test_quote(self):
+        inp = "' ( cons 1 (  cons 2 (cons 3 '() ) )  )"
+        tokens = tokenize(inp)
+        logging.info("<<<< tokens")
+        logging.info(tokens)
+        logging.info("<<<< tokens")
+        expr = parse(tokens)
+        actual = print_expression(expr)
+
+        expected = "(cons 1 (cons 2 (cons 3 '())))"
+
+        logging.info(repr(actual))
+        self.assertEquals(expected, actual)
+
+    def test_nil(self):
+        inp = "'(cons 1 '())"
+        tokens = tokenize(inp)
+        logging.info("<<<< tokens")
+        logging.info(tokens)
+        logging.info("<<<< tokens")
+        expr = parse(tokens)
+
+        logging.info(repr(expr))
+
+        actual = print_expression(expr)
+
+        expected = "(cons 1 '())"
+
+        logging.info(repr(actual))
+        self.assertEquals(expected, actual)
+
     def test_proc(self):
         env = Environment(None)
         env['a'] = Integer(1)

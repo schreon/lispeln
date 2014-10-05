@@ -1,6 +1,6 @@
 import logging
 from lispeln.scheme.assignment import Define, Set
-from lispeln.scheme.constants import Integer, Float, Boolean, Nil, Constant
+from lispeln.scheme.constants import Integer, Float, Boolean, Nil, Constant, String
 from lispeln.scheme.derived import Let, Pair, Begin, Car, Cdr
 from lispeln.scheme.expression import Expression, Quote
 from lispeln.scheme.logic import If, And, Or
@@ -106,7 +106,7 @@ def _parse_if(expressions):
     return If(*[_parse(expr) for expr in expressions])
 
 def _parse_quote(expressions):
-    logging.info("parse quote")
+    logging.info("parse quote on expressions %s" % expressions)
     return Quote(*[_parse(expr) for expr in expressions])
 
 syntax = {
@@ -123,6 +123,7 @@ syntax = {
 }
 
 def _parse_token(tok):
+    logging.info("parse token: %s" % tok)
     # Constant > Syntax > Symbol
     const_parse = match(tok, constants)
     if const_parse is not None:
@@ -134,25 +135,38 @@ def _parse_token(tok):
     if match(tok, symbols) is not None:
         return Symbol(tok)
 
+    if tok[0] == '"':
+        return String(tok[1:-1])  # omit the quotation marks
+
     raise Exception("Token cannot be matched: %s" % tok)
 
 
 def _parse_list(_list):
+    if len(_list) < 1:
+        logging.info("_parse_list: Nil")
+        return Nil()
+
     first = _parse(_list[0])
 
     # if the first argument is a constant, just return the list
     if isinstance(first, Constant):
+        logging.info("_parse_list: constant list")
         return [_parse(item) for item in _list]
 
+    # if the first argument is syntax, create a syntax object from this
     if first in syntax:
+        logging.info("_parse_list: syntax %s" % first)
         return syntax[first](_list[1:])
 
-    # if the first argument is syntax, create a syntax object from this, else, it must be a symbol and this is a call
+    #else, it must be a symbol and this is a call
+    logging.info("_parse_list: call")
     return _parse_call(_list)
 
 
 def _parse(item):
     if type(item) == list:
+        logging.info("_parse: it is a list: %s" % item)
         return _parse_list(item)
     else:
+        logging.info("_parse: it is a token: %s" % item)
         return _parse_token(item)
