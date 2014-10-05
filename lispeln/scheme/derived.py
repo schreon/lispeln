@@ -37,9 +37,3 @@ class Cdr(Syntax):  # Rest
     def __init__(self, pair, *args, **kwargs):
         super(Cdr, self).__init__(*args, **kwargs)
         self.pair = pair
-
-
-class IsEmpty(Syntax):
-    def __init__(self, pair, *args, **kwargs):
-        super(IsEmpty, self).__init__(*args, **kwargs)
-        self.pair = pair

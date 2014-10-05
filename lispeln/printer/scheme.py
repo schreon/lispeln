@@ -1,9 +1,10 @@
 from lispeln.printer.quote import quote_expression
 from lispeln.scheme.constants import Nil, Integer, Float, Boolean, String
-from lispeln.scheme.derived import Pair
+from lispeln.scheme.derived import Pair, Let
 
 import logging
 from lispeln.scheme.expression import Quote
+from lispeln.scheme.logic import If, Or, And
 from lispeln.scheme.procedure import Procedure
 from lispeln.scheme.symbol import Symbol
 
@@ -28,7 +29,7 @@ def print_symbol(symbol):
     logging.info("print Symbol: %s" % symbol.value)
     return symbol.value
 
-def print_cons(cons):
+def print_pair(cons):
     logging.info("print cons")
     if isinstance(cons.rest, Pair):
         l = ravel(cons)
@@ -47,7 +48,6 @@ def print_cons(cons):
 
 
 def print_number(number):
-    logging.info("print number: %s" % str(number.value))
     return str(number.value)
 
 def print_boolean(boolean):
@@ -79,9 +79,9 @@ print_map = {
     Float: print_number,
     String: print_string,
     Symbol: print_symbol,
-    Pair: print_cons,
+    Pair: print_pair,
     Procedure: print_proc,
-    Quote: print_quote,
+    Quote: print_quote
 }
 
 def print_expression(expression):
