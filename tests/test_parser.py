@@ -145,5 +145,9 @@ class ParserTestCase(unittest.TestCase):
         expression = parse(tokens)
         self.assertEquals(repr(Symbol('a')), repr(evaluate(expression, env)))
 
+        tokens = tokenize("(quote a)")
+        expression = parse(tokens)
+        self.assertEquals(repr(Symbol('a')), repr(evaluate(expression, env)))
+
 if __name__ == '__main__':
     unittest.main()

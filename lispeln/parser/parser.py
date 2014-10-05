@@ -119,6 +119,7 @@ syntax = {
     'or': _parse_or,
     'if': _parse_if,
     "'": _parse_quote,
+    "quote": _parse_quote
 }
 
 def _parse_token(tok):
