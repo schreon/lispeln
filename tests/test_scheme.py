@@ -1,9 +1,11 @@
+import logging
 from lispeln.scheme.constants import Integer, Float, String, Boolean
 
 
 import unittest
+from lispeln.scheme.derived import Car, Cons
 
-
+logging.basicConfig(level=logging.INFO)
 class SchemeTestCase(unittest.TestCase):
     """
     This test case tests the scheme AST objects itself. It is isolated from all other packages.
@@ -29,7 +31,9 @@ class SchemeTestCase(unittest.TestCase):
         self.assertRaises(Exception, Boolean, "False")
 
     def test_derived(self):
-        pass
+        a = Car(Cons(Integer(1), Integer(2)))
+
+        # TODO
 
     def test_expression(self):
         pass

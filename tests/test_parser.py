@@ -130,6 +130,10 @@ class ParserTestCase(unittest.TestCase):
         define_builtins(env)
 
         self.assertEquals(Cons(Cons(Integer(1), Integer(2)), Integer(3)), execute("(cons (cons 1 2) 3)", env))
+        self.assertEquals(Cons(Integer(3), Cons(Integer(1), Integer(2))), execute("(cons 3 (cons 1 2))", env))
+
+        self.assertEquals(Integer(1), execute("(car (cons 1 2))", env))
+        self.assertEquals(Integer(2), execute("(cdr (cons 1 2))", env))
 
 if __name__ == '__main__':
     unittest.main()

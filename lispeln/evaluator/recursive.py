@@ -2,7 +2,7 @@ import logging
 
 from lispeln.scheme.assignment import Define, Set
 from lispeln.scheme.constants import Integer, Float, Boolean, Nil
-from lispeln.scheme.derived import Let, Cons, Begin
+from lispeln.scheme.derived import Let, Cons, Begin, Car, Cdr
 from lispeln.evaluator.environment import Environment
 from lispeln.scheme.logic import And, If, Or
 from lispeln.scheme.procedure import Call, Procedure, Lambda
@@ -104,6 +104,13 @@ def eval_begin(begin, environment):
         evaluate(expr, environment)
     return evaluate(begin.expressions[-1], environment)
 
+
+def eval_car(expression, environment):
+    return evaluate(expression.pair, environment).first
+
+def eval_cdr(expression, environment):
+    return evaluate(expression.pair, environment).rest
+
 eval_map = {
     If: eval_if,
     And: eval_and,
@@ -121,6 +128,8 @@ eval_map = {
     Procedure: eval_procedure,
     Lambda: eval_lambda,
     Begin: eval_begin,
+    Car: eval_car,
+    Cdr: eval_cdr
 }
 
 def evaluate(expression, environment):

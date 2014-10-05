@@ -8,6 +8,9 @@ class Cons(Syntax):
         self.rest = rest
 
     def __eq__(self, other):
+        """
+        Attention, this is the equality on AST level - not evaluated!
+        """
         if not isinstance(other, Cons):
             return False
         else:
@@ -24,12 +27,19 @@ class Begin(Syntax):
         super(Begin, self).__init__()
         self.expressions = expressions
 
-class Cdr(Syntax):
-    def __init__(self, cons, *args, **kwargs):
+
+class Car(Syntax):  # First
+    def __init__(self, pair, *args, **kwargs):
+        super(Car, self).__init__(*args, **kwargs)
+        self.pair = pair
+
+class Cdr(Syntax):  # Rest
+    def __init__(self, pair, *args, **kwargs):
         super(Cdr, self).__init__(*args, **kwargs)
-        self.cons = cons
+        self.pair = pair
+
 
 class IsEmpty(Syntax):
-    def __init__(self, cons, *args, **kwargs):
+    def __init__(self, pair, *args, **kwargs):
         super(IsEmpty, self).__init__(*args, **kwargs)
-        self.cons = cons
+        self.pair = pair
