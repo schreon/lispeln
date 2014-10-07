@@ -103,8 +103,8 @@ def eval_or(arguments, env, **kwargs):
     res = Boolean(False)
     for arg in arguments:
         arg = evaluate(arg, env, **kwargs)
-        if arg == Boolean(True):
-            return Boolean(True)
+        if arg != Boolean(False):
+            return arg
         else:
             res = arg
     return res

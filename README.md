@@ -50,6 +50,72 @@ The result should be:
     
     42
 
+Syntax
+======
+<table>
+    <thead>
+        <th>Syntax</th>
+        <th>Form</th>
+        <th>Example</th>
+        <th>Result</th>
+    </thead>
+    <tr>
+        <td>let</td>
+        <td><b>let</b> (bindings) expression</td>
+        <td>(let ((x 1) (y 2)) (+ x y))</td>
+        <td>3</td>
+    </tr>
+    <tr>
+        <td>define</td>
+        <td><b>define</b> symbol value</td>
+        <td>(define x 42)</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>set!</td>
+        <td><b>set!</b> symbol value</td>
+        <td>(set! x 13)</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>if</td>
+        <td><b>if</b> test consequent alternate</td>
+        <td>(if (< 1 2) "a" "b")</td>
+        <td>"a"</td>
+    </tr>
+    <tr>
+        <td>and</td>
+        <td><b>and</b> tests</td>
+        <td>(and #t "hello" #t)</td>
+        <td>#t</td>
+    </tr>
+    <tr>
+        <td>or</td>
+        <td><b>or</b> tests</td>
+        <td>(or #f "hello" #t)</td>
+        <td>"hello"</td>
+    </tr>
+    <tr>
+        <td>lambda</td>
+        <td><b>lambda</b> formals body</td>
+        <td>((lambda (n) (set! n (+ n 1)) (set! n (* n 2)) n) 4)</td>
+        <td>10</td>
+    </tr>
+    <tr>
+        <td>begin</td>
+        <td><b>begin</b> expressions</td>
+        <td>(begin (define x 13) (set! x 41) (+ x 1))</td>
+        <td>42</td>
+    </tr>
+    <tr>
+        <td>'</td>
+        <td><b>'</b> expression</td>
+        <td>'(something)</td>
+        <td>(something)</td>
+    </tr>
+</table>
+
+
 Built-Ins
 =========
 The following built-in procedures are implemented:
@@ -84,6 +150,12 @@ The following built-in procedures are implemented:
         <td>divide</td>
         <td>(/ 8 2 2)</td>
         <td>2</td>
+    </tr>
+    <tr>
+        <td>=</td>
+        <td>numerical equality</td>
+        <td>(= 1 2)</td>
+        <td>#f</td>
     </tr>
     <tr>
         <td>eq?</td>

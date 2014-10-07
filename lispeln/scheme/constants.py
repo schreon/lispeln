@@ -23,6 +23,9 @@ class Constant(Expression):
     def __eq__(self, other):
         return self.value == other.value
 
+    def __ne__(self, other):
+        return self.value != other.value
+
     def __repr__(self):
         return "<%s:%s>" % (self.__class__.__name__, str(self.value))
 

@@ -8,7 +8,7 @@ syntax = {
     And: "and",
     Or: "or",
     Define: "define",
-    Set: "set",
+    Set: "set!",
     Let: "let",
     Lambda: "lambda",
     Begin: "begin",
@@ -92,4 +92,9 @@ def print_expression(e):
     if isinstance(e, list):
         return print_list(e)
 
+    if isinstance(e, Procedure):
+        if e.name is not None:
+            return "<procedure:%s>" % e.name
+        else:
+            return "<procedure>"
     raise Exception("cannot print: %s" % repr(e))
