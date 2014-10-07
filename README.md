@@ -49,3 +49,28 @@ You can now call:
 The result should be:
     
     42
+
+Built-Ins
+=========
+The following built-in procedures are implemented:
+
+<table>
+    <thead>
+        <th>Symbol</th>
+        <th>Procedure</th>
+        <th>Example</th>
+        <th>Result</th>
+    </thead>
+    <tr>
+        <td>+</td>
+        <td>plus</td>
+        <td>(+ 1 2 3)</td>
+        <td>6</td>
+    </tr>
+    <tr>
+        <td>+</td>
+        <td>plus</td>
+        <td>(+ 1 2 3)</td>
+        <td>6</td>
+    </tr>
+</table>
