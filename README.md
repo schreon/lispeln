@@ -31,9 +31,9 @@ Test the repl:
 
 Quickstart
 ==========
-Just use the command `repl` to start an interactive read-eval-print loop:
+Just use the command `repl -i` or `repl --interactive` to start an interactive read-eval-print loop:
 
-    repl
+    repl -i
     >>> (+ 1 2)
     3
 
@@ -47,4 +47,5 @@ You can now call:
     repl < test
 
 The result should be:
-
+    
+    42

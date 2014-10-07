@@ -5,14 +5,18 @@ from lispeln.parser.parser import parse
 from lispeln.parser.tokenizer import tokenize
 from lispeln.printer.scheme import print_expression
 
+import sys
 
 def repl():
+    if '-i' in sys.argv or '--interactive' in sys.argv:
+        prompt = ">>> "
+    else:
+        prompt = ""
     env = Environment(None)
     define_builtins(env)
     while True:
-        print ">>> ",
         try:
-            line = raw_input()
+            line = raw_input(prompt)
             if line in ['quit', 'exit']:
                 break
             tokenlists = tokenize(line)
@@ -21,15 +25,10 @@ def repl():
                 res = evaluate(expression, env)
                 if res is not None:
                     print print_expression(res)
-                else:
-                    print
         except KeyboardInterrupt:
             print
             break
         except EOFError:
-            print
             break #end of file reached
         except Exception as e:
             print e
-            print ">>> ",
-
