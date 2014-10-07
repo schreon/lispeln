@@ -80,7 +80,7 @@ Syntax
     <tr>
         <td>if</td>
         <td><b>if</b> test consequent alternate</td>
-        <td>(if (< 1 2) "a" "b")</td>
+        <td>(if (&lt; 1 2) "a" "b")</td>
         <td>"a"</td>
     </tr>
     <tr>
