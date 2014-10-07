@@ -56,6 +56,18 @@ class Pair(Expression):
     first, rest
     """
 
+    def __init__(self, first, rest):
+        self.first = first
+        self.rest = rest
+
+    def __eq__(self, other):
+        if not isinstance(other, Pair):
+            return False
+        if self.first == other.first and self.rest == other.rest:
+            return True
+        else:
+            return False
+
 class Procedure(object):
 
     def __init__(self, implementation, num_args=None, name=None):

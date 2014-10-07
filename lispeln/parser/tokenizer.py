@@ -2,16 +2,21 @@ import logging
 from lispeln.parser.scanner import Scanner
 
 def tokenize(code):
-    logging.info("tokenize")
     code = code.replace(r"\r\n", "\n")
     scanner = Scanner(code)
-    return read(scanner)
+    exprs = []
+    while not scanner.end():
+        r = read(scanner)
+        if r is not None:
+            exprs.append(r)
+    return exprs
 
 
 def read(scanner):
-    logging.info("read")
-
     scanner.skip_whitespace()
+
+    if scanner.end():
+        return None
 
     next = scanner.peek()
 
@@ -25,8 +30,8 @@ def read(scanner):
     else:
         return read_token(scanner)
 
+
 def read_list(scanner):
-    logging.info("read list")
     scanner.consume('(')
     scanner.skip_whitespace()
 
@@ -42,14 +47,11 @@ def read_list(scanner):
 def read_token(scanner):
     tok = scanner.token()
     scanner.skip_whitespace()
-    logging.info("read token %s" % tok)
     return tok
 
 def read_quote(scanner):
-    logging.info("read quote")
     scanner.consume("'")
     res = ["'"]
-
     scanner.skip_whitespace()
     res.append(read(scanner))
 

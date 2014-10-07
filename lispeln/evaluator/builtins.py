@@ -1,6 +1,9 @@
 from lispeln.scheme.constants import Float, Integer, Boolean
 from lispeln.scheme.expressions import Procedure, Pair
 
+import logging
+
+log = logging.getLogger("builtints")
 
 def _plus(*args):
     for arg in args:
@@ -56,10 +59,9 @@ def _div(*args):
     raise Exception("Invalid result type: %s" % str(type(s)))
 
 def _equals(arg1, arg2):
-    if arg1 == arg2:
-        return Boolean(True)
-    else:
-        return Boolean(False)
+    res = arg1 == arg2
+    log.info("%s == %s = %s" % (repr(arg1), repr(arg2), res))
+    return Boolean(res)
 
 def _less_than(arg1, arg2):
     if arg1 < arg2:

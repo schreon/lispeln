@@ -25,8 +25,8 @@ def _parse_boolean(tok):
 
 
 constants = {
-    re.compile(r"^[0-9]+$"): _parse_int,
-    re.compile(r"^[0-9]+.[0-9]+$"): _parse_float,
+    re.compile(r"^[+-]?[0-9]+$"): _parse_int,
+    re.compile(r"^[+-]?[0-9]+.[0-9]+$"): _parse_float,
     re.compile(r"false|true|#f|#t"): _parse_boolean
 }
 
