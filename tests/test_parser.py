@@ -1,17 +1,8 @@
-import logging
 
 from lispeln.parser.tokenizer import tokenize
 from lispeln.parser.parser import parse
-from lispeln.scheme.constants import Integer, Boolean
-from lispeln.scheme.expressions import Symbol
-
-
-__author__ = 'schreon'
 
 import unittest
-
-logging.basicConfig(level=logging.INFO)
-
 
 class ParserTestCase(unittest.TestCase):
     """

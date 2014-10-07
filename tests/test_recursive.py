@@ -8,10 +8,6 @@ from lispeln.parser.tokenizer import tokenize
 from lispeln.scheme.constants import Integer, Boolean, Nil, String
 from lispeln.scheme.expressions import Symbol, Procedure, Pair
 
-import logging
-
-logging.basicConfig(level=logging.INFO)
-
 def execute(code, env):
     res = None
     for toks in tokenize(code):
@@ -60,8 +56,6 @@ class RecursiveEvaluatorTestCase(unittest.TestCase):
 
         expected = String(" this is a nice string\n ; yes 123 ")
         actual = execute('" this is a nice string\n ; yes 123 "', env)
-        logging.info("expected: %s" % expected.value)
-        logging.info("actual: %s" % actual.value)
         self.assertEquals(expected, actual)
 
         execute('#t', env)
@@ -96,6 +90,13 @@ class RecursiveEvaluatorTestCase(unittest.TestCase):
         actual = execute("(let ((x 2) (y 3)) (* x y))", env)
         expected = Integer(6)
         self.assertEquals(expected, actual)
+
+    def test_named_lambda(self):
+        env = Environment(None)
+        define_builtins(env)
+        execute("(define add1 (lambda (x) (+ x 1)))", env)
+        proc = execute("add1", env)
+        self.assertEquals("add1", proc.name)
 
     def test_lambda(self):
         env = Environment(None)

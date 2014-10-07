@@ -1,8 +1,6 @@
-import logging
 from lispeln.scheme.constants import Integer, Float, String, Boolean
 import unittest
 
-logging.basicConfig(level=logging.INFO)
 class ConstantsTestCase(unittest.TestCase):
     """
     This test case tests the scheme constants.

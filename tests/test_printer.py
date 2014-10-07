@@ -3,13 +3,8 @@ from lispeln.parser.tokenizer import tokenize
 from lispeln.printer.scheme import print_expression
 from lispeln.scheme.constants import Nil, Integer
 
-
 import unittest
-import logging
 from lispeln.scheme.expressions import Pair
-
-logging.basicConfig(level=logging.INFO)
-
 
 def echo(code):
     return print_expression(parse(tokenize(code)[0]))

@@ -5,61 +5,50 @@ from lispeln.scheme.expressions import Symbol, Procedure, Pair
 from lispeln.scheme.syntax import If, And, Or, Define, Set, Let, Lambda, Begin, Car, Cdr, Quote, Syntax
 
 
-def eval_define(arguments, env):
+def eval_define(arguments, env, **kwargs):
     if len(arguments) != 2:
         raise Exception("define takes exactly 2 arguments: symbol and an expression")
     symbol = arguments[0]
     expression = arguments[1]
-    env[symbol] = evaluate(expression, env)
+    logging.info("DEFINE: from_symbol=%s" % symbol.value)
+    env[symbol] = evaluate(expression, env, from_symbol=symbol.value)
 
 
-def eval_set(arguments, env):
+def eval_set(arguments, env, **kwargs):
     if len(arguments) != 2:
         raise Exception("set! takes exactly 2 arguments: symbol and an expression")
     symbol = arguments[0]
     expression = arguments[1]
     if symbol not in env:
         raise Exception("Unknown Symbol %s" % str(symbol.value))
-    env[symbol] = evaluate(expression, env)
+    env[symbol] = evaluate(expression, env, **kwargs)
 
 
-def eval_let(arguments, env):
+def eval_let(arguments, env, **kwargs):
     if len(arguments) != 2:
         raise Exception("let takes exactly 2 arguments: list of bindings and an expression")
     bindings = arguments[0]
     expression = arguments[1]
     scope = Environment(env)
     for (symbol, value) in bindings:
-        scope[symbol] = evaluate(value, scope)
-    return evaluate(expression, scope)
+        scope[symbol] = evaluate(value, scope, **kwargs)
+    return evaluate(expression, scope, **kwargs)
 
 
-def eval_constant(constant, env):
+def eval_constant(constant, env, **kwargs):
     return constant
 
 
-def eval_cons(cons, env):
-    return Pair(evaluate(cons.first, env), evaluate(cons.rest, env))
+def eval_cons(cons, env, **kwargs):
+    return Pair(evaluate(cons.first, env, **kwargs), evaluate(cons.rest, env, **kwargs))
 
 
-def eval_symbol(symbol, env):
+def eval_symbol(symbol, env, **kwargs):
     if symbol not in env:
         raise Exception("Unbound identifier %s" % symbol.value)
-    value = env[symbol]
-    if isinstance(value, Lambda):
-        return eval_lambda(value, env, name=symbol.value)
-    else:
-        return evaluate(value, env)
+    return evaluate(env[symbol], env, **kwargs)
 
-
-def eval_call(call, env):
-    operands = [evaluate(operand, env) for operand in call.operands]
-    operator = evaluate(call.operator, env)
-
-    return operator(*operands)
-
-
-def eval_procedure(proc, env):
+def eval_procedure(proc, env, **kwargs):
     return proc
 
 
@@ -69,7 +58,7 @@ class LambdaImplementation(object):
         self.formals = formals
         self.body = body
 
-    def __call__(self, *arguments):
+    def __call__(self, *arguments, **kwargs):
         logging.info("Lambda --> implementation")
 
         # create a nested environment
@@ -80,15 +69,16 @@ class LambdaImplementation(object):
 
         # 1. update the scope depending on the positional values in the formals
         for symbol, value in zip(self.formals, arguments):
-            scope[symbol] = evaluate(value, scope)
+            scope[symbol] = evaluate(value, scope, **kwargs)
 
         # 2. evaluate the body
-        operands = [evaluate(op, scope) for op in self.body]
+        operands = [evaluate(op, scope, **kwargs) for op in self.body]
 
         # return the last operand
         return operands[-1]
 
-def eval_lambda(args, env, name=None):
+def eval_lambda(args, env, from_symbol=None, **kwargs):
+    logging.info("LAMBDA: from_symbol=%s" % from_symbol)
     if len(args) < 2:
         raise Exception("Lambda expects at least 2 arguments: formals and at least one body element")
 
@@ -96,13 +86,13 @@ def eval_lambda(args, env, name=None):
     body = args[1:]
     implementation = LambdaImplementation(env, formals, body)
 
-    return Procedure(implementation, num_args=len(formals), name=name)
+    return Procedure(implementation, num_args=len(formals), name=from_symbol)
 
 
-def eval_and(arguments, env):
+def eval_and(arguments, env, **kwargs):
     res = Boolean(True)
     for arg in arguments:
-        arg = evaluate(arg, env)
+        arg = evaluate(arg, env, **kwargs)
         if arg == Boolean(False):
             return Boolean(False)
         else:
@@ -110,10 +100,10 @@ def eval_and(arguments, env):
     return res
 
 
-def eval_or(arguments, env):
+def eval_or(arguments, env, **kwargs):
     res = Boolean(False)
     for arg in arguments:
-        arg = evaluate(arg, env)
+        arg = evaluate(arg, env, **kwargs)
         if arg == Boolean(True):
             return Boolean(True)
         else:
@@ -121,33 +111,33 @@ def eval_or(arguments, env):
     return res
 
 
-def eval_if(arguments, env):
+def eval_if(arguments, env, **kwargs):
     if len(arguments) != 3:
         raise Exception("if takes exactly 3 arguments: test, consequent, alternate")
     test = arguments[0]
     consequent = arguments[1]
     alternate = arguments[2]
-    if evaluate(test, env).value == True:
-        return evaluate(consequent, env)
+    if evaluate(test, env, **kwargs).value == True:
+        return evaluate(consequent, env, **kwargs)
     else:
-        return evaluate(alternate, env)
+        return evaluate(alternate, env, **kwargs)
 
 
-def eval_begin(arguments, environment):
+def eval_begin(arguments, environment, **kwargs):
     for expr in arguments[:-1]:
-        evaluate(expr, environment)
-    return evaluate(arguments[-1], environment)
+        evaluate(expr, environment, **kwargs)
+    return evaluate(arguments[-1], environment, **kwargs)
 
 
-def eval_car(expression, environment):
-    return evaluate(expression.pair, environment).first
+def eval_car(expression, environment, **kwargs):
+    return evaluate(expression.pair, environment, **kwargs).first
 
 
-def eval_cdr(expression, environment):
-    return evaluate(expression.pair, environment).rest
+def eval_cdr(expression, environment, **kwargs):
+    return evaluate(expression.pair, environment, **kwargs).rest
 
 
-def eval_quote(arguments, _):
+def eval_quote(arguments, _, **kwargs):
     if len(arguments) != 1:
         raise Exception("Quote takes exactly 1 argument")
     return arguments[0]
@@ -168,7 +158,7 @@ syntax = {
 }
 
 
-def eval_list(l, environment):
+def eval_list(l, environment, **kwargs):
     if len(l) < 1:
         return Nil()
 
@@ -178,14 +168,14 @@ def eval_list(l, environment):
     # if first is syntax, evaluate appropriately
     if isinstance(first, Syntax):
         eval_syntax = syntax[first.__class__]
-        return eval_syntax(rest, environment)
+        return eval_syntax(rest, environment, **kwargs)
 
     # else, evaluate first
-    first = evaluate(first, environment)
+    first = evaluate(first, environment, **kwargs)
 
     # if first is a procedure, call it
     if isinstance(first, Procedure):
-        operands = [evaluate(operand, environment) for operand in rest]
+        operands = [evaluate(operand, environment, **kwargs) for operand in rest]
         return first(*operands)
 
     raise Exception("Could not evaluate list: %s" % repr(l))
@@ -204,10 +194,12 @@ eval_map = {
 }
 
 
-def evaluate(expression, environment):
+def evaluate(expression, environment, **kwargs):
+    if "from_symbol" in kwargs:
+        logging.info("EVALUATE: from_symbol=%s" % kwargs['from_symbol'])
     key = expression.__class__
     if key not in eval_map:
         raise Exception("Unknown expression: %s" % key.__name__)
     else:
         logging.info("Evaluate %s" % key.__name__)
-        return eval_map[key](expression, environment)
+        return eval_map[key](expression, environment, **kwargs)
