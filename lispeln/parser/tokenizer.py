@@ -7,6 +7,7 @@ def tokenize(code):
     exprs = []
     while not scanner.end():
         r = read(scanner)
+        logging.info("!!! read expression: %s" % r)
         if r is not None:
             exprs.append(r)
     return exprs

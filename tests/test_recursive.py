@@ -5,7 +5,7 @@ from lispeln.evaluator.builtins import _plus, define_builtins
 from lispeln.evaluator.environment import Environment
 from lispeln.parser.parser import parse
 from lispeln.parser.tokenizer import tokenize
-from lispeln.scheme.constants import Integer, Boolean
+from lispeln.scheme.constants import Integer, Boolean, Nil, String
 from lispeln.scheme.expressions import Symbol, Procedure, Pair
 
 import logging
@@ -47,6 +47,26 @@ class RecursiveEvaluatorTestCase(unittest.TestCase):
         child1['a'] = 5
         self.assertEquals(child1['a'], 5)
         self.assertEquals(root['a'], 1)
+
+    def test_constants(self):
+        env = Environment(None)
+
+        execute("1", env)
+        execute("+1", env)
+        execute("-1", env)
+        execute("1.5", env)
+        execute("+1.5", env)
+        execute("-1.5", env)
+
+        expected = String(" this is a nice string\n ; yes 123 ")
+        actual = execute('" this is a nice string\n ; yes 123 "', env)
+        logging.info("expected: %s" % expected.value)
+        logging.info("actual: %s" % actual.value)
+        self.assertEquals(expected, actual)
+
+        execute('#t', env)
+        execute('#f', env)
+
 
     def test_procedure(self):
 
@@ -166,7 +186,7 @@ class RecursiveEvaluatorTestCase(unittest.TestCase):
 
     def test_set_test(self):
         """
-        Test von Julius
+        Test von Julius adaptiert: https://github.com/juliusf/schemePy/blob/master/tests/evaluator_tests.py#L266
         """
         env = Environment(None)
         define_builtins(env)
@@ -176,21 +196,83 @@ class RecursiveEvaluatorTestCase(unittest.TestCase):
             (define contains (lambda (set_ y) (set_ y)))
             (define s1 (singletonSet 1))
             (define s2 (singletonSet 2))
-            ;(define s3 (lambda (x) (and (>= x 5) (<= x 15))))
-            ;(define s4 (lambda (x) (and (<= x -5) (>= x -15))))
+            (define s3 (lambda (x) (and (>= x 5) (<= x 15))))
+            (define s4 (lambda (x) (and (<= x -5) (>= x -15))))
              """, env)
 
         self.assertEquals(Boolean(True), execute("(contains s1 1)", env))
+        self.assertEquals(Boolean(True), execute("(contains s2 2)", env))
+        self.assertEquals(Boolean(True), execute("(contains s3 5)", env))
+        self.assertEquals(Boolean(True), execute("(contains s4 -5)", env))
+        self.assertEquals(Boolean(False), execute("(contains s4 -22)", env))
 
-        # test_2 = execute("(contains s2 2)", env)
-        # test_3 = execute("(contains s3 5)", env)
-        # test_4 = execute("(contains s4 -5)", env)
-        # test_5 = execute("(contains s4 -22)", env)
+    def test_y_combinator(self):
+        """
+        Test von Julius adaptiert: https://github.com/juliusf/schemePy/blob/master/tests/evaluator_tests.py#L314
+        """
+        env = Environment(None)
+        define_builtins(env)
 
-        # self.assertEquals(test_2, Boolean(True))
-        # self.assertEquals(test_3, Boolean(True))
-        # self.assertEquals(test_4, Boolean(True))
-        # self.assertEquals(test_5, Boolean(False))
+        execute("""
+            (define Y
+             (lambda (f)
+             ((lambda (x) (x x))
+             (lambda (g)
+             (f (lambda (x) ((g g) x)))))))
+               (define fac
+                 (Y
+                   (lambda (f)
+                     (lambda (x)
+                       (if (< x 2)
+                           1
+                           (* x (f (- x 1))))))))
+        """, env)
+
+        self.assertEquals(Integer(720), execute("(fac 6)", env))
+
+
+    def test_iota(self):
+        """
+        Test von Julius adaptiert: https://github.com/juliusf/schemePy/blob/master/tests/evaluator_tests.py#L337
+        """
+        env = Environment(None)
+        define_builtins(env)
+
+        execute("""
+            (define iota
+                (lambda (start end step)
+                    (begin
+                        (define helper
+                            (lambda (cur list)
+                                (if (= cur start)
+                                    list
+                                    (helper
+                                        (- cur step)
+                                        (cons cur list)))))
+                        (helper end '()))))
+            """, env)
+
+        res = execute("(iota 10 1 -1)", env)
+        expected = Pair(Integer(9),
+                        Pair(Integer(8),
+                             Pair(Integer(7),
+                                  Pair(Integer(6),
+                                       Pair(Integer(5),
+                                            Pair(Integer(4),
+                                                 Pair(Integer(3),
+                                                      Pair(Integer(2),
+                                                           Pair(Integer(1),
+                                                                Nil())
+                                                      )
+                                                 )
+                                            )
+                                       )
+                                  )
+                             )
+                        )
+        )
+        self.assertEquals(expected, res)
+
 
 if __name__ == '__main__':
     unittest.main()

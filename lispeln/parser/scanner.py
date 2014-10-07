@@ -81,19 +81,14 @@ class Scanner(object):
             while not self.end() or self.matches('\n'):
                 self.next()
 
-    def until(self, *strings):
-        """
-        Seeks until one of the given strings has been found.
-        :return: the string until the first match
-        """
-        start = self.cursor
-        while not self.end():
-            for string in strings:
-                if self.matches(string):
-                    return self.string[start:self.cursor]
-            self.next()
-        raise UnexpectedEndOfStringException("Unexpected end of string. Did not find any of %s" % str(strings))
+    def read_string(self):
+        self.consume('"')
 
+        start = self.cursor
+        while not self.end() and not self.peek(0) == '"':
+            self.next()
+        self.consume('"')
+        return '"' + self.string[start:self.cursor]
 
     def token(self):
         """
@@ -102,20 +97,15 @@ class Scanner(object):
         """
         # string?
         if self.peek(0) == '"':
-            token_end = ['"']
-            pre = post = '"'
-            self.next()
-        else:
-            token_end = TOKEN_END
-            pre = post = ''
+            return self.read_string()
 
         start = self.cursor
         while not self.end():
-            for string in token_end:
+            for string in TOKEN_END:
                 if self.matches(string):
-                    return pre + self.string[start:self.cursor] + post
+                    return self.string[start:self.cursor]
             self.next()
-        return pre + self.string[start:self.cursor] + post
+        return self.string[start:self.cursor]
 
     def consume(self, *strings):
         """

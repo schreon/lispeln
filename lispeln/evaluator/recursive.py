@@ -1,6 +1,6 @@
 import logging
 from lispeln.evaluator.environment import Environment
-from lispeln.scheme.constants import Nil, Integer, Float, Boolean
+from lispeln.scheme.constants import Nil, Integer, Float, Boolean, String
 from lispeln.scheme.expressions import Symbol, Procedure, Pair
 from lispeln.scheme.syntax import If, And, Or, Define, Set, Let, Lambda, Begin, Car, Cdr, Quote, Syntax
 
@@ -94,7 +94,6 @@ def eval_lambda(args, env, name=None):
 
     formals = args[0]
     body = args[1:]
-
     implementation = LambdaImplementation(env, formals, body)
 
     return Procedure(implementation, num_args=len(formals), name=name)
@@ -201,6 +200,7 @@ eval_map = {
     Integer: eval_constant,
     Float: eval_constant,
     Boolean: eval_constant,
+    String: eval_constant
 }
 
 

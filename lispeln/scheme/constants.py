@@ -33,6 +33,10 @@ class Nil(Constant):
     def __repr__(self):
         return "<Nil>"
 
+    def __eq__(self, other):
+        if isinstance(other, Nil):
+            return True
+
 class Number(Constant):
     def __gt__(self, other):
         return (self.value > other.value)
