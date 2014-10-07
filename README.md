@@ -50,6 +50,13 @@ The result should be:
     
     42
 
+GUI
+===
+To run `lispeln` in GUI mode, type 
+
+    repl --gui
+
+
 Run Tests & Coverage
 ====================
 Clone the repo and `cd` into it:
