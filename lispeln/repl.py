@@ -9,8 +9,8 @@ from lispeln.printer.scheme import print_expression
 def repl():
     env = Environment(None)
     define_builtins(env)
-    print ">>> ",
     while True:
+        print ">>> ",
         try:
             line = raw_input()
             if line in ['quit', 'exit']:
@@ -21,7 +21,6 @@ def repl():
                 res = evaluate(expression, env)
                 if res is not None:
                     print print_expression(res)
-                    print ">>> ",
                 else:
                     print
         except KeyboardInterrupt:
