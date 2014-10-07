@@ -70,7 +70,7 @@ class Pair(Expression):
 
 class Procedure(object):
 
-    def __init__(self, implementation, num_args=None, name=None):
+    def __init__(self, implementation, num_args=0, name=None):
         super(Procedure, self).__init__()
         self.name = name
         self.implementation = implementation
@@ -80,7 +80,7 @@ class Procedure(object):
         """
         Calls the implementation with the arguments
         """
-        if self.num_args is None or len(arguments) == self.num_args:
+        if self.num_args == 0 or len(arguments) == self.num_args:
             return self.implementation(*arguments)
         else:
             raise Exception("Invalid number of arguments. Expected %d, but got %d" % (self.num_args, len(arguments)))

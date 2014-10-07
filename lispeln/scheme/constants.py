@@ -40,6 +40,9 @@ class Nil(Constant):
         if isinstance(other, Nil):
             return True
 
+    def __len__(self):
+        return 0 # it is the empty list!
+
 class Number(Constant):
     def __gt__(self, other):
         return (self.value > other.value)

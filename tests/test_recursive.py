@@ -112,6 +112,24 @@ class RecursiveEvaluatorTestCase(unittest.TestCase):
         self.assertEquals(Integer(1), execute("(car (cons 1 2))", env))
         self.assertEquals(Integer(2), execute("(cdr (cons 1 2))", env))
 
+
+    def test_multiline(self):
+
+        env = Environment(None)
+        define_builtins(env)
+
+        code = """
+        (begin
+            (define x 1)
+            (define y 2)
+            (+ 1 2)
+        )
+        """
+
+        res = execute(code, env)
+
+        self.assertEquals(Integer(3), res)
+
     def test_let(self):
         env = Environment(None)
         define_builtins(env)
@@ -126,6 +144,15 @@ class RecursiveEvaluatorTestCase(unittest.TestCase):
         execute("(define add1 (lambda (x) (+ x 1)))", env)
         proc = execute("add1", env)
         self.assertEquals("add1", proc.name)
+
+    def test_nil_formals(self):
+        env = Environment(None)
+        define_builtins(env)
+        execute("(define add1 (lambda () (+ 1 1)))", env)
+        proc = execute("add1", env)
+        self.assertEquals("add1", proc.name)
+        res = execute("(add1)", env)
+        self.assertEquals(Integer(2), res)
 
     def test_lambda(self):
         env = Environment(None)
@@ -229,7 +256,7 @@ class RecursiveEvaluatorTestCase(unittest.TestCase):
 
     def test_set_test(self):
         """
-        Test von Julius adaptiert
+        Test von Julius
         """
         env = Environment(None)
         define_builtins(env)
@@ -251,7 +278,7 @@ class RecursiveEvaluatorTestCase(unittest.TestCase):
 
     def test_y_combinator(self):
         """
-        Test von Julius adaptiert
+        Test von Julius
         """
         env = Environment(None)
         define_builtins(env)
@@ -276,7 +303,7 @@ class RecursiveEvaluatorTestCase(unittest.TestCase):
 
     def test_iota(self):
         """
-        Test von Julius adaptiert
+        Test von Julius
         """
         env = Environment(None)
         define_builtins(env)

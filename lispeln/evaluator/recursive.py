@@ -67,8 +67,9 @@ class LambdaImplementation(object):
         if len(arguments) != len(self.formals):
             raise Exception("Invalid number of Arguments: %d, Expected: %d" % (len(arguments), len(self.formals)))
 
-        for symbol, value in zip(self.formals, arguments): # 1. update the scope depending on the positional values in the formals
-            scope[symbol] = evaluate(value, scope, **kwargs)
+        if len(self.formals) > 0:
+            for symbol, value in zip(self.formals, arguments): # 1. update the scope depending on the positional values in the formals
+                scope[symbol] = evaluate(value, scope, **kwargs)
 
         # 2. evaluate the body
         operands = [evaluate(op, scope, **kwargs) for op in self.body]
@@ -83,6 +84,7 @@ def eval_lambda(args, env, from_symbol=None, **kwargs):
 
     formals = args[0]
     body = args[1:]
+
     implementation = LambdaImplementation(env, formals, body)
 
     return Procedure(implementation, num_args=len(formals), name=from_symbol)
