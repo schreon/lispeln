@@ -16,7 +16,7 @@ Now create a new virtualenv:
     
 Activate it:
 
-    . .env/bin/activate
+    source .env/bin/activate
 
 
 Now install `lispeln` directly from github:
