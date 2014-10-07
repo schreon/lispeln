@@ -31,20 +31,20 @@ Test the repl:
 
 Usage
 ==========
-Use the command `repl -i` or `repl --interactive` to start an interactive read-eval-print loop:
+Use the command `repl` to start an interactive read-eval-print loop:
 
-    repl -i
+    repl
     >>> (+ 1 2)
     3
 
-You can pipe your stdin into this repl. Please create a file 'test' with the following content:
+You can pipe your stdin into lispeln. Please create a file 'test' with the following content:
 
     (define a 41)
     (+ a 1)
 
 You can now call:
     
-    repl < test
+    lispeln < test
 
 The result should be:
     
@@ -54,7 +54,7 @@ GUI
 ===
 To run `lispeln` in GUI mode, type 
 
-    repl --gui
+    repl-gui
 
 
 Run Tests & Coverage

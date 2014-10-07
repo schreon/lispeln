@@ -5,17 +5,9 @@ from lispeln.parser.parser import parse
 from lispeln.parser.tokenizer import tokenize
 from lispeln.printer.scheme import print_expression
 
-import sys
-
 import fileinput
 
 def repl():
-    if '-i' in sys.argv or '--interactive' in sys.argv:
-        interactive()
-    else:
-        batch()
-
-def interactive():
     env = Environment(None)
     define_builtins(env)
     code = ""

@@ -10,5 +10,5 @@ setup(
     url='https://github.com/schreon/lispeln',
     description='A Scheme intepreter.',
     long_description=open('README.md').read(),
-    scripts=['bin/repl']
+    scripts=['bin/repl', 'bin/repl-gui', 'bin/lispeln']
 )
