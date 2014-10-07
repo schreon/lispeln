@@ -23,3 +23,28 @@ Now install `lispeln` directly from github:
 
     pip install git+https://github.com/schreon/lispeln.git
 
+Test the repl:
+
+    repl
+    >>> (+ 1 2)
+    3
+
+Quickstart
+==========
+Just use the command `repl` to start an interactive read-eval-print loop:
+
+    repl
+    >>> (+ 1 2)
+    3
+
+You can pipe your stdin into this repl. Please create a file 'test' with the following content:
+
+    (define a 41)
+    (+ a 1)
+
+You can now call:
+    
+    repl < test
+
+The result should be:
+
