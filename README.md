@@ -50,6 +50,30 @@ The result should be:
     
     42
 
+Run Tests & Coverage
+====================
+Clone the repo and `cd` into it:
+
+    git clone https://github.com/schreon/lispeln.git lispeln
+    cd lispeln
+
+Create another virtualenv, activate it
+
+    virtualenv .env
+    source .env/bin/activate
+
+Install py.test and py.test coverage:
+
+    pip install pytest pytest-cov
+
+Add this project to the local `pip`:
+
+    pip install -e .
+
+Run py.test with coverage:
+
+    py.test --cov lispeln tests/
+
 Syntax
 ======
 <table>
