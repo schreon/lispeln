@@ -1,15 +1,14 @@
 # -*- coding: utf-8-*-
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 setup(
     name='lispeln',
     version='0.0.0',
     author='Leon Schröder',
     author_email='schreon.loeder@gmail.com',
-    packages=['lispeln'],
+    packages=find_packages(),
     url='https://github.com/schreon/lispeln',
     description='A Scheme intepreter.',
     long_description=open('README.md').read(),
-    install_requires=[],
-    scripts=['bin/lispeln']
+    scripts=['bin/repl']
 )
