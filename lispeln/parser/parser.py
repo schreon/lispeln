@@ -106,7 +106,7 @@ def _parse_if(expressions):
     return If(*[_parse(expr) for expr in expressions])
 
 def _parse_quote(expressions):
-    logging.info("parse quote on expressions %s" % expressions)
+    logging.info("Parse quote -> %s" % expressions)
     return Quote(*[_parse(expr) for expr in expressions])
 
 syntax = {
@@ -123,19 +123,22 @@ syntax = {
 }
 
 def _parse_token(tok):
-    logging.info("parse token: %s" % tok)
     # Constant > Syntax > Symbol
     const_parse = match(tok, constants)
     if const_parse is not None:
+        logging.info("parse constant: %s" % tok)
         return const_parse(tok)
 
     if tok in syntax:
+        logging.info("parse syntax: %s" % tok)
         return tok
 
     if match(tok, symbols) is not None:
+        logging.info("parse symbol: %s" % tok)
         return Symbol(tok)
 
     if tok[0] == '"':
+        logging.info("parse string: %s" % tok)
         return String(tok[1:-1])  # omit the quotation marks
 
     raise Exception("Token cannot be matched: %s" % tok)
