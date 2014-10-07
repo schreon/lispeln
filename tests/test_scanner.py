@@ -90,21 +90,6 @@ class ScannerTestCase(unittest.TestCase):
         scanner.skip_whitespace()
         self.assertTrue(scanner.matches("Dies nicht mehr!"))
 
-
-    def test_until(self):
-        """
-        it captures the substring to the next occurrence of a searched string
-        """
-        string = "   dies ist \n  ein Test"
-        scanner = Scanner(string)
-        scanner.skip_whitespace()
-        self.assertFalse(scanner.matches("ist"))
-        capture = scanner.until("ein", "ist", "Test")
-        self.assertTrue(scanner.matches("ist"))
-        self.assertEquals(capture, "dies ")
-
-        self.assertRaises(UnexpectedEndOfStringException, scanner.until, "gibt es nicht")
-
     def test_consume(self):
         """
         it consumes substrings
@@ -157,7 +142,18 @@ class ScannerTestCase(unittest.TestCase):
 
         logging.info(tokens)
 
-        self.assertEquals(["'", "a"], tokens)
+        self.assertEquals(["'", "a"], tokens[0])
+
+    def test_list(self):
+        """
+        it recognizes a list
+        """
+
+        tokens = tokenize(" ( 1 2 3  ) ")
+
+        logging.info(tokens)
+
+        self.assertEquals(["1", "2", "3"], tokens[0])
 
 if __name__ == '__main__':
     unittest.main()

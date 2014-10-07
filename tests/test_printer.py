@@ -1,21 +1,18 @@
-from lispeln.evaluator.recursive import evaluate
 from lispeln.parser.parser import parse
 from lispeln.parser.tokenizer import tokenize
 from lispeln.printer.scheme import print_expression
-from lispeln.scheme.constants import Nil, Integer, Boolean, Float, String
-from lispeln.scheme.derived import Pair
-from lispeln.scheme.procedure import Procedure, Lambda
-from lispeln.scheme.symbol import Symbol
+from lispeln.scheme.constants import Nil, Integer
 
 
 import unittest
 import logging
+from lispeln.scheme.expressions import Pair
 
 logging.basicConfig(level=logging.INFO)
 
 
 def echo(code):
-    return print_expression(parse(tokenize(code)))
+    return print_expression(parse(tokenize(code)[0]))
 
 
 class PrinterTestCase(unittest.TestCase):
@@ -43,18 +40,6 @@ class PrinterTestCase(unittest.TestCase):
         expr = Pair(Integer(1), Pair(Integer(2), Pair(Integer(3), Integer(4))))
         expected = "(1 2 3 . 4)"
         self.assertEquals(expected, print_expression(expr))
-
-    def test_quote(self):
-        actual = echo("' ( cons 1 (  cons 2 (cons 3 '() ) )  )")
-        expected = "(cons 1 (cons 2 (cons 3 '())))"
-
-        logging.info(repr(actual))
-        self.assertEquals(expected, actual)
-
-    def test_nil(self):
-        actual = echo("'(cons 1 '())")
-        expected = "(cons 1 '())"
-        self.assertEquals(expected, actual)
 
 if __name__ == '__main__':
     unittest.main()

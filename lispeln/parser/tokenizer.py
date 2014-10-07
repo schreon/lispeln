@@ -37,7 +37,7 @@ def read_list(scanner):
     scanner.skip_whitespace()
 
     _list = []
-    while not scanner.end() and scanner.peek() != ')':
+    while not scanner.end() and scanner.peek(0) != ')':
         _list.append(read(scanner))
 
     scanner.skip_whitespace()

@@ -1,13 +1,21 @@
-from lispeln.printer.quote import quote_expression
-from lispeln.scheme.constants import Nil, Integer, Float, Boolean, String
-from lispeln.scheme.derived import Pair, Let
-
 import logging
-from lispeln.scheme.expressions import Quote
-from lispeln.scheme.logic import If, Or, And
-from lispeln.scheme.procedure import Procedure, Call
-from lispeln.scheme.symbol import Symbol
+from lispeln.scheme.constants import Nil, Integer, Float, Boolean, String, Number
+from lispeln.scheme.expressions import Symbol, Procedure, Pair
+from lispeln.scheme.syntax import If, And, Or, Define, Set, Let, Lambda, Begin, Car, Cdr, Quote, Syntax
 
+syntax = {
+    If: "if",
+    And: "and",
+    Or: "or",
+    Define: "define",
+    Set: "set",
+    Let: "let",
+    Lambda: "lambda",
+    Begin: "begin",
+    Car: "car",
+    Cdr: "cdr",
+    Quote: "'"
+}
 
 def ravel(cons):
     """
@@ -24,10 +32,6 @@ def ravel(cons):
             last = last.rest
         l.append(last)
         return l
-
-def print_symbol(symbol):
-    logging.info("print Symbol: %s" % symbol.value)
-    return symbol.value
 
 def print_pair(cons):
     logging.info("print cons")
@@ -47,46 +51,39 @@ def print_pair(cons):
     return "(%s . %s)" % (print_expression(cons.first), print_expression(cons.rest))
 
 
-def print_number(number):
-    return str(number.value)
+def print_list(l):
+    if len(l) < 1:
+        return "()"
 
-def print_boolean(boolean):
-    if boolean.value == True:
-        return "#t"
-    if boolean.value == False:
-        return "#f"
-    raise Exception("This is not a boolean. Won't print it.")
+    return "(" + " ".join([print_expression(e) for e in l]) + ")"
 
-def print_nil(nil):
-    return "()"
+def print_expression(e):
 
-def print_string(s):
-    return '"%s"' % s.value
+    if isinstance(e, Nil):
+        return "()"
 
-def print_proc(proc):
-    if proc.name is not None:
-        return '#<procedure:%s>' % proc.name
-    else:
-        return '#<procedure>'
+    if isinstance(e, Syntax):
+        return syntax[e.__class__]
 
-def print_quote(q):
-    return "%s" % quote_expression(q.expression)
+    if isinstance(e, Symbol):
+        return str(e.value)
 
-print_map = {
-    Nil: print_nil,
-    Boolean: print_boolean,
-    Integer: print_number,
-    Float: print_number,
-    String: print_string,
-    Symbol: print_symbol,
-    Pair: print_pair,
-    Procedure: print_proc,
-    Quote: print_quote,
-}
+    if isinstance(e, Pair):
+        return print_pair(e)
 
-def print_expression(expression):
-    print_func = print_map.get(expression.__class__, None)
-    if print_func is None:
-        raise Exception("No print function defined for %s" % str(expression.__class__))
-    else:
-        return print_func(expression)
+    if isinstance(e, Boolean):
+        if e.value == True:
+            return "#t"
+        else:
+            return "#f"
+
+    if isinstance(e, String):
+        return '"%s"' % e.value
+
+    if isinstance(e, Number):
+        return str(e.value)
+
+    if isinstance(e, list):
+        return print_list(e)
+
+    raise Exception("cannot print: %s" % repr(e))

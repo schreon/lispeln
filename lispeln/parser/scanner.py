@@ -78,7 +78,7 @@ class Scanner(object):
         Skip comment until linebreak
         """
         if self.peek() == ';':
-            while not self.end() or self.matches('\n'):
+            while not self.end() and not self.matches('\n'):
                 self.next()
 
     def read_string(self):
