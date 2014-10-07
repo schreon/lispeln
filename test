@@ -1,7 +1,0 @@
-
-        ((lambda (x)
-            (+ ((lambda ()
-                (define x 1)
-                x
-            )) x)
-        ) 2)
