@@ -24,16 +24,6 @@ class Begin(Syntax):
     [expressions]
     """
 
-class Car(Syntax):  # First
-    """
-    pair
-    """
-
-class Cdr(Syntax):  # Rest
-    """
-    pair
-    """
-
 class Quote(Syntax):
     """
     expression

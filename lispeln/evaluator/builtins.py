@@ -51,6 +51,8 @@ def _div(*args):
     q = 1
     for arg in args[1:]:
         q *= arg.value
+    if q > s:
+        q = float(q)
     s /= q
     if type(s) == float:
         return Float(s)

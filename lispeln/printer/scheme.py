@@ -1,7 +1,7 @@
 import logging
 from lispeln.scheme.constants import Nil, Integer, Float, Boolean, String, Number
 from lispeln.scheme.expressions import Symbol, Procedure, Pair
-from lispeln.scheme.syntax import If, And, Or, Define, Set, Let, Lambda, Begin, Car, Cdr, Quote, Syntax
+from lispeln.scheme.syntax import If, And, Or, Define, Set, Let, Lambda, Begin, Quote, Syntax
 
 syntax = {
     If: "if",
@@ -12,8 +12,6 @@ syntax = {
     Let: "let",
     Lambda: "lambda",
     Begin: "begin",
-    Car: "car",
-    Cdr: "cdr",
     Quote: "'"
 }
 
@@ -54,6 +52,14 @@ def print_pair(cons):
 def print_list(l):
     if len(l) < 1:
         return "()"
+
+    first = l[0]
+    if isinstance(first, Quote):
+        rest = l[1:]
+        if len(rest) > 1:
+            return "'" + print_expression(l[1:])
+        else:
+            return "'" + print_expression(l[1])
 
     return "(" + " ".join([print_expression(e) for e in l]) + ")"
 

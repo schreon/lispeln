@@ -2,7 +2,7 @@ import logging
 from lispeln.evaluator.environment import Environment
 from lispeln.scheme.constants import Nil, Integer, Float, Boolean, String
 from lispeln.scheme.expressions import Symbol, Procedure, Pair
-from lispeln.scheme.syntax import If, And, Or, Define, Set, Let, Lambda, Begin, Car, Cdr, Quote, Syntax
+from lispeln.scheme.syntax import If, And, Or, Define, Set, Let, Lambda, Begin, Quote, Syntax
 
 
 def eval_define(arguments, env, **kwargs):
@@ -67,8 +67,7 @@ class LambdaImplementation(object):
         if len(arguments) != len(self.formals):
             raise Exception("Invalid number of Arguments: %d, Expected: %d" % (len(arguments), len(self.formals)))
 
-        # 1. update the scope depending on the positional values in the formals
-        for symbol, value in zip(self.formals, arguments):
+        for symbol, value in zip(self.formals, arguments): # 1. update the scope depending on the positional values in the formals
             scope[symbol] = evaluate(value, scope, **kwargs)
 
         # 2. evaluate the body
@@ -128,15 +127,6 @@ def eval_begin(arguments, environment, **kwargs):
         evaluate(expr, environment, **kwargs)
     return evaluate(arguments[-1], environment, **kwargs)
 
-
-def eval_car(expression, environment, **kwargs):
-    return evaluate(expression.pair, environment, **kwargs).first
-
-
-def eval_cdr(expression, environment, **kwargs):
-    return evaluate(expression.pair, environment, **kwargs).rest
-
-
 def eval_quote(arguments, _, **kwargs):
     if len(arguments) != 1:
         raise Exception("Quote takes exactly 1 argument")
@@ -152,16 +142,11 @@ syntax = {
     Let: eval_let,
     Lambda: eval_lambda,
     Begin: eval_begin,
-    Car: eval_car,
-    Cdr: eval_cdr,
     Quote: eval_quote
 }
 
 
 def eval_list(l, environment, **kwargs):
-    if len(l) < 1:
-        return Nil()
-
     first = l[0]
     rest = l[1:]
 

@@ -5,7 +5,8 @@ from lispeln.evaluator.builtins import _plus, define_builtins
 from lispeln.evaluator.environment import Environment
 from lispeln.parser.parser import parse
 from lispeln.parser.tokenizer import tokenize
-from lispeln.scheme.constants import Integer, Boolean, Nil, String
+from lispeln.printer.scheme import print_expression
+from lispeln.scheme.constants import Integer, Boolean, Nil, String, Float
 from lispeln.scheme.expressions import Symbol, Procedure, Pair
 
 def execute(code, env):
@@ -83,6 +84,34 @@ class RecursiveEvaluatorTestCase(unittest.TestCase):
         call = [Symbol('+'), Symbol('a'), Symbol('b')]
         self.assertEquals(evaluate(call, env), Integer(3))
 
+    def test_builtins(self):
+        env = Environment(None)
+        define_builtins(env)
+
+        self.assertEquals(Integer(1), execute("(+ -2 3)", env))
+        self.assertEquals(Integer(-1), execute("(- 2 3)", env))
+        self.assertEquals(Integer(6), execute("(* 2 3)", env))
+        self.assertEquals(Integer(2), execute("(/ 4 2)", env))
+        self.assertEquals(Float(0.5), execute("(/ 1 2)", env))
+        self.assertEquals(Boolean(True), execute("(eq? 1 1)", env))
+        self.assertEquals(Boolean(False), execute("(eq? 1 2)", env))
+        self.assertEquals(Boolean(True), execute("(= 1 1)", env))
+        self.assertEquals(Boolean(False), execute("(= 1 2)", env))
+        self.assertEquals(Boolean(True), execute("(< 1 2)", env))
+        self.assertEquals(Boolean(False), execute("(< 1 1)", env))
+        self.assertEquals(Boolean(True), execute("(> 2 1)", env))
+        self.assertEquals(Boolean(False), execute("(> 1 1)", env))
+        self.assertEquals(Boolean(True), execute("(>= 2 1)", env))
+        self.assertEquals(Boolean(True), execute("(>= 1 1)", env))
+        self.assertEquals(Boolean(True), execute("(<= 1 2)", env))
+        self.assertEquals(Boolean(True), execute("(<= 1 1)", env))
+        self.assertEquals(Boolean(False), execute("(<= 2 1)", env))
+        self.assertEquals(Boolean(True), execute("(>= 2 1)", env))
+        self.assertEquals(Boolean(True), execute("(>= 1 1)", env))
+        self.assertEquals(Boolean(False), execute("(>= 1 2)", env))
+        self.assertEquals(Integer(1), execute("(car (cons 1 2))", env))
+        self.assertEquals(Integer(2), execute("(cdr (cons 1 2))", env))
+
     def test_let(self):
         env = Environment(None)
         define_builtins(env)
@@ -153,6 +182,19 @@ class RecursiveEvaluatorTestCase(unittest.TestCase):
         self.assertEquals(repr([Symbol('a')]), repr(execute("(quote (a))", env)))
         self.assertEquals(repr(parse(tokenize("(  1  2 3 )")[0])), repr(execute("( quote ( 1 2 3    ))", env)))
 
+
+        a = "(cons 1 (cons 2 (cons 3 '())))"
+        b = "'(cons 1 (cons 2 (cons 3 '())))"
+
+        a = execute(a, env)
+        b = execute(b, env)
+
+        self.assertEquals("(1 2 3)", print_expression(a))
+        self.assertEquals("(cons 1 (cons 2 (cons 3 '())))", print_expression(b))
+
+        e = execute("(cons '() '())", env)
+        self.assertEquals("(())", print_expression(e))
+
     def test_pairs(self):
         env = Environment(None)
         define_builtins(env)
@@ -187,7 +229,7 @@ class RecursiveEvaluatorTestCase(unittest.TestCase):
 
     def test_set_test(self):
         """
-        Test von Julius adaptiert: https://github.com/juliusf/schemePy/blob/master/tests/evaluator_tests.py#L266
+        Test von Julius adaptiert
         """
         env = Environment(None)
         define_builtins(env)
@@ -209,7 +251,7 @@ class RecursiveEvaluatorTestCase(unittest.TestCase):
 
     def test_y_combinator(self):
         """
-        Test von Julius adaptiert: https://github.com/juliusf/schemePy/blob/master/tests/evaluator_tests.py#L314
+        Test von Julius adaptiert
         """
         env = Environment(None)
         define_builtins(env)
@@ -234,7 +276,7 @@ class RecursiveEvaluatorTestCase(unittest.TestCase):
 
     def test_iota(self):
         """
-        Test von Julius adaptiert: https://github.com/juliusf/schemePy/blob/master/tests/evaluator_tests.py#L337
+        Test von Julius adaptiert
         """
         env = Environment(None)
         define_builtins(env)

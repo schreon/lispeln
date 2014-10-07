@@ -2,10 +2,6 @@ import collections
 import logging
 from lispeln.scheme.expressions import Symbol
 
-
-__author__ = 'schreon'
-
-
 class Environment(collections.MutableMapping):
 
     def __init__(self, parent, *args, **kwargs):
