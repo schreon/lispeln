@@ -36,38 +36,6 @@ class ParserTestCase(unittest.TestCase):
         expected = "[[<Syntax:Lambda>, [<Symbol:n>], [<Syntax:Set>, <Symbol:n>, <Integer:42>], [<Symbol:+>, <Symbol:n>, <Integer:1>]], <Symbol:n>]"
         self.assertEquals(expected, actual)
 
-    def test_begin(self):
-        env = Environment(None)
-        define_builtins(env)
-
-        actual = execute("", env)
-        expected = Integer(3)
-        self.assertEquals(expected, actual)
-
-    def test_lambda(self):
-        env = Environment(None)
-        define_builtins(env)
-
-        env['n'] = Integer(42)
-
-        tokens = tokenize("")
-
-        logging.info(tokens)
-
-        expression = parse(tokens)
-        actual = evaluate(expression, env)
-        expected = Integer(43)
-        self.assertEquals(expected, actual)
-
-        code = "((lambda (n) (set! n (+ n 1)) (set! n (* n 2)) n) 4)"
-        tokens = tokenize(code)
-        expression = parse(tokens)
-        actual = evaluate(expression, env)
-        expected = Integer(10)
-        self.assertEquals(expected, actual)
-        n = evaluate(Symbol('n'), env)
-        self.assertEquals(n, Integer(42))
-
     def test_comment(self):
         string = "(+ 1\n; test comment with whitespace\n3)"
         tokens = tokenize(string)

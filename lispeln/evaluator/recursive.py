@@ -17,11 +17,15 @@ def eval_set(arguments, env):
         raise Exception("Unknown Symbol %s" % str(symbol.value))
     env[symbol] = evaluate(expression, env)
 
-def eval_let(let, env):
+def eval_let(arguments, env):
+    if len(arguments) != 2:
+        raise Exception("let takes exactly 2 arguments: list of bindings and an expression")
+    bindings = arguments[0]
+    expression = arguments[1]
     scope = Environment(env)
-    for (symbol, value) in let.bindings:
+    for (symbol, value) in bindings:
         scope[symbol] = evaluate(value, scope)
-    return evaluate(let.expression, scope)
+    return evaluate(expression, scope)
 
 def eval_constant(constant, env):
     return constant

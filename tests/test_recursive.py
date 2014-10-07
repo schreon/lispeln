@@ -64,6 +64,14 @@ class RecursiveEvaluatorTestCase(unittest.TestCase):
         call = [Symbol('+'), Symbol('a'), Symbol('b')]
         self.assertEquals(evaluate(call, env), Integer(3))
 
+    def test_let(self):
+        env = Environment(None)
+        define_builtins(env)
+
+        actual = execute("(let ((x 2) (y 3)) (* x y))", env)
+        expected = Integer(6)
+        self.assertEquals(expected, actual)
+
     def test_lambda(self):
         env = Environment(None)
         define_builtins(env)
