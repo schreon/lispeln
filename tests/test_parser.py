@@ -1,14 +1,9 @@
 import logging
 
-from lispeln.evaluator.recursive import evaluate
 from lispeln.parser.tokenizer import tokenize
 from lispeln.parser.parser import parse
-from lispeln.evaluator.builtins import define_builtins
 from lispeln.scheme.constants import Integer, Boolean
-from lispeln.scheme.derived import Begin, Pair
-from lispeln.evaluator.environment import Environment
-from lispeln.scheme.procedure import Call
-from lispeln.scheme.symbol import Symbol
+from lispeln.scheme.expressions import Symbol
 
 
 __author__ = 'schreon'
@@ -17,37 +12,35 @@ import unittest
 
 logging.basicConfig(level=logging.INFO)
 
-def execute(code, env):
-    return evaluate(parse(tokenize(code)), env)
 
 class ParserTestCase(unittest.TestCase):
     """
     This test case tests the parser. It relies on the scanner package to be fully tested.
     """
+
     def test_tokenizer(self):
         self.assertEquals(tokenize("( + 1 2 )"), ['+', '1', '2'])
         self.assertEquals(tokenize("(+ ( 1 2 ) )"), ['+', ['1', '2']])
         self.assertEquals(tokenize("1 "), '1')
 
     def test_parser(self):
-        parsed = parse(tokenize("(+ 1 2)"))
-
-        env = Environment(None)
-        define_builtins(env)
-
-        expected = evaluate(Begin(Call(Symbol('+'), Integer(1), Integer(2))), env)
-        actual = evaluate(parsed, env)
+        actual = repr(parse(tokenize("(begin ( + 1 2 ))")))
+        expected = "[<Syntax:Begin>, [<Symbol:+>, <Integer:1>, <Integer:2>]]"
         self.assertEquals(expected, actual)
 
-        actual = evaluate(parse(tokenize("5")), env)
-        expected = Integer(5)
+        actual = repr(parse(tokenize("(begin (define x 1) (+ x 2))")))
+        expected = "[<Syntax:Begin>, [<Syntax:Define>, <Symbol:x>, <Integer:1>], [<Symbol:+>, <Symbol:x>, <Integer:2>]]"
+        self.assertEquals(expected, actual)
+
+        actual = repr(parse(tokenize("((lambda (n) (set! n 42) (+ n 1)) n)")))
+        expected = "[[<Syntax:Lambda>, [<Symbol:n>], [<Syntax:Set>, <Symbol:n>, <Integer:42>], [<Symbol:+>, <Symbol:n>, <Integer:1>]], <Symbol:n>]"
         self.assertEquals(expected, actual)
 
     def test_begin(self):
         env = Environment(None)
         define_builtins(env)
 
-        actual = execute("(begin (define x 1) (+ x 2))", env)
+        actual = execute("", env)
         expected = Integer(3)
         self.assertEquals(expected, actual)
 
@@ -57,7 +50,7 @@ class ParserTestCase(unittest.TestCase):
 
         env['n'] = Integer(42)
 
-        tokens = tokenize("((lambda (n) (set! n 42) (+ n 1)) n)")
+        tokens = tokenize("")
 
         logging.info(tokens)
 
@@ -76,7 +69,6 @@ class ParserTestCase(unittest.TestCase):
         self.assertEquals(n, Integer(42))
 
     def test_comment(self):
-
         string = "(+ 1\n; test comment with whitespace\n3)"
         tokens = tokenize(string)
         self.assertEquals(tokens, ['+', '1', '3'])
@@ -136,7 +128,6 @@ class ParserTestCase(unittest.TestCase):
         self.assertEquals(Integer(2), execute("(cdr (cons 1 2))", env))
 
     def test_quote(self):
-
         env = Environment(None)
         define_builtins(env)
 
@@ -148,6 +139,7 @@ class ParserTestCase(unittest.TestCase):
         tokens = tokenize("(quote a)")
         expression = parse(tokens)
         self.assertEquals(repr(Symbol('a')), repr(evaluate(expression, env)))
+
 
 if __name__ == '__main__':
     unittest.main()

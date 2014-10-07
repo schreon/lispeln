@@ -1,18 +1,12 @@
 import logging
 from lispeln.scheme.constants import Integer, Float, String, Boolean
-
-
 import unittest
-from lispeln.scheme.derived import Car, Pair
 
 logging.basicConfig(level=logging.INFO)
-class SchemeTestCase(unittest.TestCase):
+class ConstantsTestCase(unittest.TestCase):
     """
-    This test case tests the scheme AST objects itself. It is isolated from all other packages.
+    This test case tests the scheme constants.
     """
-
-    def test_assignment(self):
-        pass
 
     def test_constants(self):
         Integer(42)
@@ -29,20 +23,6 @@ class SchemeTestCase(unittest.TestCase):
         self.assertRaises(Exception, Boolean, 42.5)
         self.assertRaises(Exception, Boolean, "True")
         self.assertRaises(Exception, Boolean, "False")
-
-    def test_derived(self):
-        a = Car(Pair(Integer(1), Integer(2)))
-
-        # TODO
-
-    def test_expression(self):
-        pass
-
-    def test_logic(self):
-        pass
-
-    def test_procedure(self):
-        pass
 
 if __name__ == '__main__':
     unittest.main()

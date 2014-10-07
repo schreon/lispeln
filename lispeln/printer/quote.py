@@ -1,7 +1,7 @@
 from lispeln.scheme.assignment import Define, Set
 from lispeln.scheme.constants import Nil, Boolean, Integer, Float, String
 from lispeln.scheme.derived import Pair, Let, Begin, Car, Cdr
-from lispeln.scheme.expression import Quote
+from lispeln.scheme.expressions import Quote
 from lispeln.scheme.logic import And, Or, If
 from lispeln.scheme.procedure import Call, Lambda
 from lispeln.scheme.symbol import Symbol

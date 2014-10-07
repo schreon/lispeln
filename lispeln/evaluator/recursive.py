@@ -1,22 +1,21 @@
 import logging
-
-from lispeln.scheme.assignment import Define, Set
-from lispeln.scheme.constants import Integer, Float, Boolean, Nil
-from lispeln.scheme.derived import Let, Pair, Begin, Car, Cdr
 from lispeln.evaluator.environment import Environment
-from lispeln.scheme.expression import Quote
-from lispeln.scheme.logic import And, If, Or
-from lispeln.scheme.procedure import Call, Procedure, Lambda
-from lispeln.scheme.symbol import Symbol
+from lispeln.scheme.constants import Nil, Integer, Float, Boolean
+from lispeln.scheme.expressions import Symbol, Procedure, Pair
+from lispeln.scheme.syntax import If, And, Or, Define, Set, Let, Lambda, Begin, Car, Cdr, Quote, Syntax
 
 
 def eval_define(define, env):
     env[define.symbol] = evaluate(define.expression, env)
 
-def eval_set(_set, env):
-    if _set.symbol not in env:
-        raise Exception("Unknown Symbol %s" % str(_set.symbol.value))
-    env[_set.symbol] = evaluate(_set.expression, env)
+def eval_set(arguments, env):
+    if len(arguments) != 2:
+        raise Exception("set! takes exactly 2 arguments: symbol and an expression")
+    symbol = arguments[0]
+    expression = arguments[1]
+    if symbol not in env:
+        raise Exception("Unknown Symbol %s" % str(symbol.value))
+    env[symbol] = evaluate(expression, env)
 
 def eval_let(let, env):
     scope = Environment(env)
@@ -48,29 +47,32 @@ def eval_call(call, env):
 def eval_procedure(proc, env):
     return proc
 
-def eval_lambda(_lambda, env, name=None):
+def eval_lambda(arguments, env, name=None):
     # create a nested environment
     scope = Environment(env)
+
+    if len(arguments) < 2:
+        raise Exception("Lambda expects at least 2 arguments: formals and at least one body element")
+    formals = arguments[0]
+    body = arguments[1:]
 
     def implementation(*arguments):
         logging.info("Lambda --> implementation")
 
-        formals = _lambda.formals
-
         if len(arguments) != len(formals):
-            raise Exception("Invalid number of Arguments: %d, Expected: %d" % (len(arguments), len(_lambda.formals)))
+            raise Exception("Invalid number of Arguments: %d, Expected: %d" % (len(arguments), len(formals)))
 
         # 1. update the scope depending on the positional values in the formals
         for symbol, value in zip(formals, arguments):
             scope[symbol] = evaluate(value, env)
 
         # 2. evaluate all the body
-        operands = [evaluate(op, scope) for op in _lambda.body]
+        operands = [evaluate(op, scope) for op in body]
 
         # return the last operand
         return operands[-1]
 
-    return Procedure(implementation, num_args=len(_lambda.formals), name=name)
+    return Procedure(implementation, num_args=len(formals), name=name)
 
 def eval_and(_and, env):
     res = Boolean(True)
@@ -115,26 +117,51 @@ def eval_cdr(expression, environment):
 def eval_quote(quote, environment):
     return quote.expression
 
-eval_map = {
+syntax = {
     If: eval_if,
     And: eval_and,
     Or: eval_or,
     Define: eval_define,
     Set: eval_set,
     Let: eval_let,
-    Nil: eval_constant,
-    Integer: eval_constant,
-    Float: eval_constant,
-    Boolean: eval_constant,
-    Pair: eval_cons,
-    Symbol: eval_symbol,
-    Call: eval_call,
-    Procedure: eval_procedure,
     Lambda: eval_lambda,
     Begin: eval_begin,
     Car: eval_car,
     Cdr: eval_cdr,
     Quote: eval_quote
+}
+
+def eval_list(l, environment):
+    if len(l) < 1:
+        return Nil()
+
+    first = l[0]
+    rest = l[1:]
+
+    # if first is syntax, evaluate appropriately
+    if isinstance(first, Syntax):
+        eval_syntax = syntax[first.__class__]
+        return eval_syntax(rest, environment)
+
+    # else, evaluate first
+    first = evaluate(first, environment)
+
+    # if first is a procedure, call it
+    if isinstance(first, Procedure):
+        operands = [evaluate(operand, environment) for operand in rest]
+        return first(*operands)
+
+    raise Exception("Could not evaluate list: %s" % repr(l))
+
+eval_map = {
+    list: eval_list,
+    Procedure: eval_procedure,
+    Pair: eval_cons,
+    Symbol: eval_symbol,
+    Nil: eval_constant,
+    Integer: eval_constant,
+    Float: eval_constant,
+    Boolean: eval_constant,
 }
 
 def evaluate(expression, environment):

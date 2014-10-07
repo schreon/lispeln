@@ -3,7 +3,7 @@ from lispeln.scheme.constants import Nil, Integer, Float, Boolean, String
 from lispeln.scheme.derived import Pair, Let
 
 import logging
-from lispeln.scheme.expression import Quote
+from lispeln.scheme.expressions import Quote
 from lispeln.scheme.logic import If, Or, And
 from lispeln.scheme.procedure import Procedure, Call
 from lispeln.scheme.symbol import Symbol

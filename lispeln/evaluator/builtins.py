@@ -1,6 +1,5 @@
 from lispeln.scheme.constants import Float, Integer, Boolean
-from lispeln.scheme.derived import Pair
-from lispeln.scheme.procedure import Procedure
+from lispeln.scheme.expressions import Procedure, Pair
 
 
 def _plus(*args):

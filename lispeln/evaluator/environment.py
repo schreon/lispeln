@@ -1,7 +1,6 @@
 import collections
 import logging
-
-from lispeln.scheme.symbol import Symbol
+from lispeln.scheme.expressions import Symbol
 
 
 __author__ = 'schreon'
